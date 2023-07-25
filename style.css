@@ -1,14 +1,11 @@
 #gamePanel{
     text-align: center;
-    background-color:lightblue;
+    background-color:whitesmoke;
 }
 
 #gameFrame{
     border: 5px solid;
-    border-radius: 20px;
     background-color: black;
-    width: 600px;
-    height: 733px;
 }
 
 #livesLabel{
