@@ -16,26 +16,25 @@ function closeGame() {
     console.log(`Game Running: ${running}`)
 }
 
-const gameWidth = gameFrame.height; // 665px
-const gameHeight = gameFrame.width; // 665px
+const gameWidth = gameFrame.height; // 630px
+const gameHeight = gameFrame.width; // 570px  //21x19
 
-const tiles = 21; // 21x21 tile
-const tileSize = 35; // 35x35 px
-const speed = 3;
+const tileSize = 30; // 30x30 px
+const speed = 2.5;
 
 window.addEventListener("keydown", changeDirection)
 
-//const img = document.createElement("img");
-//img.src = "https://picsum.photos/200/301";
-//document.body.appendChild(img);
+//const playerImage = document.createElement("img");
+//playerImage.src = './img/pacman3.png';
 
 let player;
-let playerStartPointX = tileSize * 9 + tileSize / 2
-let playerStartPointY = tileSize * 9 + tileSize / 2
+let midPoint = tileSize / 2; //15 
+let playerStartPointX = tileSize * 9 + midPoint
+let playerStartPointY = tileSize * 9 + midPoint
 let playerX = playerStartPointX //4*tileSize + tileSize/2
 let playerY = playerStartPointY //3*tileSize + tileSize/2
-let midPoint = tileSize / 2; //17.5 
 let intervalID;
+let intervalDirection;
 
 let up = false;
 let down = false;
@@ -73,6 +72,63 @@ drawPlayer();
 nextTick();
 clock();
 
+
+function predictDirection(tempDirection){
+
+    intervalDirection = setTimeout(() => {
+
+        if(playerX % tileSize == midPoint && playerY % tileSize == midPoint){
+            directions(tempDirection)
+            clearTimeout();
+        }
+        else{
+            predictDirection(tempDirection);
+        }   
+    },10);
+
+}
+
+const allDirections = {
+    UP : "up",
+    DOWN : "down",
+    LEFT : "left",
+    RIGHT : "right"
+}
+
+function directions(direction){
+
+    if(direction == allDirections.UP){
+        up = true;
+        down = false;
+        right = false;
+        left = false;
+    }
+    else if (direction == allDirections.DOWN){
+        down = true;
+        up = false;
+        right = false;
+        left = false;
+    }
+    else if (direction == allDirections.RIGHT){
+        down = false;
+        up = false;
+        right = true;
+        left = false;
+    }
+    else if (direction == allDirections.LEFT){
+        down = false;
+        up = false;
+        right = false;
+        left = true;
+    }
+    else if (direction == "space"){
+        left = false;
+        right = false;
+        up = false;
+        down = false;
+    }
+}
+
 function changeDirection(event) {
 
     const keyPressed = event.keyCode;
@@ -83,64 +139,58 @@ function changeDirection(event) {
     const leftNum = 37;
     const space = 32;
 
-    let temp;
-
     switch (keyPressed) {
         case upNum:
-            temp = (playerX - tileSize / 2) / (tileSize);
-            if (left) {
-                temp = Math.floor(temp);
+            // sağa veya sola giderken yukarı basılırsa:
+            if((right && !collusion) || (left && !collusion)){
+                predictDirection(allDirections.UP);
             }
-            else if (right) {
-                temp = Math.ceil(temp);
+            else {
+                directions(allDirections.UP);
             }
-            temp = temp * tileSize + tileSize / 2;
-            console.log(`playerX snap: ${playerX} ${temp}`);
-
-            if(playerX == temp){
-                up = true;
-            }
-
-            //playerX = temp;
-            up = true;
-            down = false;
-            right = false;
-            left = false;
             break;
         case downNum:
-            temp = (playerX - tileSize / 2) / (tileSize);
-            if (left) {
-                temp = Math.floor(temp);
+            // sağa veya sola giderken aşağı basılırsa
+            if((right && !collusion) || (left && !collusion)){
+                predictDirection(allDirections.DOWN);
             }
-            else if (right) {
-                temp = Math.ceil(temp);
+            else {
+                directions(allDirections.DOWN);
             }
-            temp = temp * tileSize + tileSize / 2;
-            console.log(`playerX snap: ${playerX} ${temp}`);
-            playerX = temp;
-            down = true;
-            up = false;
-            right = false;
-            left = false;
             break;
         case rightNum:
-            right = true;
-            left = false;
-            up = false;
-            down = false;
+            // yukarı veya aşağı giderken sağa basılırsa
+            if((up && !collusion) || (down && !collusion)){
+                predictDirection(allDirections.RIGHT);
+            }
+            else {
+                directions(allDirections.RIGHT);
+            }
             break;
         case leftNum:
-            left = true;
-            right = false;
-            up = false;
-            down = false;
+            // yukarı veya aşağı giderken sola basılırsa
+            if((up && !collusion) || (down && !collusion)){
+                predictDirection(allDirections.LEFT);
+            }
+            else {
+                directions(allDirections.LEFT)
+            }
             break;
         case space:
-            left = false;
-            right = false;
-            up = false;
-            down = false;
+            directions("space");
             break;
+    }
+}
+
+function teleportRight(){
+    if (playerX > gameHeight + midPoint) {
+        playerX = 0 - midPoint;
+    }
+}
+
+function teleportLeft(){
+    if (playerX + tileSize + midPoint < tileSize) {
+        playerX = 20 * tileSize
     }
 }
 
@@ -150,22 +200,26 @@ function movePlayer() {
 
     if (!collusion) {
         if (up) {
-            playerY = playerY - speed;
+            if(playerX % tileSize == 15){
+                playerY = playerY - speed;
+            }
         }
         else if (down) {
-            playerY = playerY + speed;
+            if(playerX % tileSize == 15){ 
+                playerY = playerY + speed;
+            }
         }
         else if (right) {
-            playerX = playerX + speed;
-            if (playerX > gameHeight + midPoint) {
-                playerX = 0 - midPoint;
+            if(playerY % tileSize == 15){
+                playerX = playerX + speed;
             }
+            teleportRight();
         }
         else if (left) {
-            playerX = playerX - speed;
-            if (playerX + tileSize + midPoint < tileSize) {
-                playerX = 20 * tileSize
+            if(playerY % tileSize == 15){
+                playerX = playerX - speed;
             }
+            teleportLeft();
         }
     }
 }
@@ -189,6 +243,8 @@ function drawMap(map) {
 }
 
 function drawPlayer() {
+
+    //context.drawImage(playerImage, playerX, playerY);
 
     context.beginPath();
     context.arc(playerX, playerY, tileSize / 2, 0, 2 * Math.PI, false);

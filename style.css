@@ -11,17 +11,20 @@
 #livesLabel{
     margin-right: 300px;
     font-family: 'Slabo 27px', serif;
+    color : white;
     font-size: 35px;
 }
 
 #scoreLabel{
     font-family: 'Slabo 27px', serif;
     font-size: 35px;
+    color : white;
 }
 
 #timer{
     font-family: "Permanent Marker", cursive;
     font-size: 50px;
+    color : white;
 }
 
 #RestartButton{
