@@ -16,6 +16,7 @@ const gameHeight = gameFrame.width; // 570px  //21x19
 
 const tileSize = 30; // 30x30 px
 const speed = 2.5;
+var TO_RADIANS = Math.PI / 180;
 
 window.addEventListener("keydown", changeDirection)
 
@@ -26,10 +27,11 @@ let playerStartPointY = tileSize * 9 + midPoint
 let playerX = playerStartPointX //4*tileSize + tileSize/2
 let playerY = playerStartPointY //3*tileSize + tileSize/2
 let intervalID;
+let playerIntervalID;
 let intervalDirection;
 
 let up = false;
-let down = false;
+let down = true;
 let right = false;
 let left = false;
 
@@ -59,10 +61,9 @@ const map = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
-drawMap(map);
-drawPlayer();
-nextTick();
 clock();
+nextTick();
+imageChanger();
 
 const upWall = document.createElement("img");
 upWall.src = './img/wall/up.png'
@@ -99,10 +100,33 @@ Xright.src = './img/wall/Xright.png'
 const bait = document.createElement("img");
 bait.src = './img/wall/bait.png'
 
-const block = 8;
-const blockX = 9
+//const block = 8;
+//const blockX = 9
 const black = document.createElement("img");
 black.src = './img/wall/black.png'
+
+const pacmanOpen = document.createElement("img");
+pacmanOpen.id = "pacman";
+pacmanOpen.src = './img/player/pacmanOpen.png'
+
+const pacmanClose = document.createElement("img");
+pacmanClose.src = './img/player/pacmanClose.png'
+
+let mouthOpen = false;
+let changeImg = 1;
+
+let point = 0;
+
+function collectScore() {
+
+    let locationX = Math.round((playerX-midPoint)/tileSize)
+    let locationY = Math.round((playerY-midPoint)/tileSize)
+
+    if (map[locationY][locationX] == 1) {
+        context.fillStyle = "red";
+        context.fillRect(playerY / tileSize, playerX / tileSize, tileSize, tileSize)
+    }
+}
 
 function closeGame() {
     running = false;
@@ -377,15 +401,58 @@ function drawMap(map) {
     }
 }
 
+function imageChanger() {
+
+    playerIntervalID = setTimeout(() => {
+        if (changeImg == 1) {
+            mouthOpen = true;
+            changeImg = 2;
+        } else if (changeImg == 2) {
+            mouthOpen = false;
+            changeImg = 1;
+        }
+        imageChanger();
+    }, 200);
+}
+
+function rotateAndPaintImage(image, angleInRad) {
+    context.translate(playerX, playerY);
+    context.rotate(angleInRad * TO_RADIANS);
+    context.drawImage(image, -midPoint, -midPoint);
+    context.rotate(-angleInRad * TO_RADIANS);
+    context.translate(-playerX, -playerY);
+}
+
 function drawPlayer() {
 
-    //context.drawImage(playerImage, playerX, playerY);
-
-    context.beginPath();
-    context.arc(playerX, playerY, tileSize / 2, 0, 2 * Math.PI, false);
-    context.lineWidth = 3;
-    context.fillStyle = "yellow"
-    context.fill();
+    if (mouthOpen) {
+        if (up) {
+            rotateAndPaintImage(pacmanOpen, 270);
+        }
+        else if (down) {
+            rotateAndPaintImage(pacmanOpen, 90);
+        }
+        else if (right) {
+            rotateAndPaintImage(pacmanOpen, 0);
+        }
+        else if (left) {
+            rotateAndPaintImage(pacmanOpen, 180);
+        }
+    }
+    else {
+        if (up) {
+            rotateAndPaintImage(pacmanClose, 270);
+        }
+        else if (down) {
+            rotateAndPaintImage(pacmanClose, 90);
+        }
+        else if (right) {
+            rotateAndPaintImage(pacmanClose, 0);
+        }
+        else if (left) {
+            rotateAndPaintImage(pacmanClose, 180);
+        }
+    }
 }
 
 function nextTick() {
@@ -394,6 +461,7 @@ function nextTick() {
         drawMap(map);
         createMap();
         drawPlayer();
+        //collectScore();
         movePlayer();
         nextTick();
     }, 10);
