@@ -4,28 +4,25 @@ const context = gameFrame.getContext("2d");
 const scoreText = document.querySelector("#scoreLabel")
 const restartButton = document.querySelector("#RestartButton")
 let timerClock = document.querySelector("#timer");
-let startTime = 300;
+let startTime = 60;
+let currentTime = startTime;
+timerClock.innerHTML = currentTime
 let changedTime = 0;
 
 restartButton.addEventListener("click", closeGame);
 
 let collusion = false;
 
-function closeGame() {
-    running = false;
-    console.log(`Game Running: ${running}`)
-}
-
 const gameWidth = gameFrame.height; // 630px
 const gameHeight = gameFrame.width; // 570px  //21x19
 
 const tileSize = 30; // 30x30 px
 const speed = 2.5;
+var TO_RADIANS = Math.PI / 180;
 
 window.addEventListener("keydown", changeDirection)
 
-//const playerImage = document.createElement("img");
-//playerImage.src = './img/pacman3.png';
+let gameOver = false;
 
 let player;
 let midPoint = tileSize / 2; //15 
@@ -34,10 +31,11 @@ let playerStartPointY = tileSize * 9 + midPoint
 let playerX = playerStartPointX //4*tileSize + tileSize/2
 let playerY = playerStartPointY //3*tileSize + tileSize/2
 let intervalID;
+let playerIntervalID;
 let intervalDirection;
 
 let up = false;
-let down = false;
+let down = true;
 let right = false;
 let left = false;
 
@@ -51,11 +49,11 @@ const map = [
     [0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0],
     [0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
     [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-    [1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1],
-    [0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 1, 0, 0, 2, 0, 0, 1, 0, 1, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1, 1],
     [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0],
-    [1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1],
+    [0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0],
     [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0],
     [0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
     [0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0],
@@ -67,61 +65,251 @@ const map = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
-drawMap(map);
-drawPlayer();
-nextTick();
+window.addEventListener("keydown", function(e) {
+    if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+        e.preventDefault();
+    }
+}, false);
+
 clock();
+nextTick();
+imageChanger();
+
+const upWall = document.createElement("img");
+upWall.src = './img/wall/up.png'
+const downWall = document.createElement("img");
+downWall.src = './img/wall/down.png'
+const leftWall = document.createElement("img");
+leftWall.src = './img/wall/left.png'
+const rightWall = document.createElement("img");
+rightWall.src = './img/wall/right.png'
+
+const upLeftWall = document.createElement("img");
+upLeftWall.src = './img/wall/up_left.png'
+const upRightWall = document.createElement("img");
+upRightWall.src = './img/wall/up_right.png'
+const downLeftWall = document.createElement("img");
+downLeftWall.src = './img/wall/down_left.png'
+const downRightWall = document.createElement("img");
+downRightWall.src = './img/wall/down_right.png'
+
+const upDownWall = document.createElement("img");
+upDownWall.src = './img/wall/up_down.png'
+const rightLeftWall = document.createElement("img");
+rightLeftWall.src = './img/wall/right_left.png'
+
+const Xup = document.createElement("img");
+Xup.src = './img/wall/Xup.png'
+const Xdown = document.createElement("img");
+Xdown.src = './img/wall/Xdown.png'
+const Xleft = document.createElement("img");
+Xleft.src = './img/wall/Xleft.png'
+const Xright = document.createElement("img");
+Xright.src = './img/wall/Xright.png'
+
+const bait = document.createElement("img");
+bait.src = './img/wall/bait.png'
+
+const block = document.createElement("img");
+block.src = './img/wall/block.png'
+
+//const blockX = 9
+
+const black = document.createElement("img");
+black.src = './img/wall/black.png'
+
+const pacmanOpen = document.createElement("img");
+pacmanOpen.id = "pacman";
+pacmanOpen.src = './img/player/pacmanOpen.png'
+
+const pacmanClose = document.createElement("img");
+pacmanClose.src = './img/player/pacmanClose.png'
+
+let mouthOpen = false;
+let changeImg = 1;
+
+let point = 0;
+
+// MAX SCORE = 1890
+function displayGameOver() {
+
+    if (score == 1890) {
+
+    }
+
+}
 
 
-function predictDirection(tempDirection){
+function collectScore() {
+
+    let locationX = Math.round((playerX - midPoint) / tileSize)
+    let locationY = Math.round((playerY - midPoint) / tileSize)
+
+    if (map[locationY][locationX] == 1) {
+        map[locationY][locationX] = 2;
+
+        point = point + 10;
+
+        scoreText.innerHTML = "Score: " + point;
+
+    }
+}
+
+function closeGame() {
+    running = false;
+    console.log(`Game Running: ${running}`)
+}
+
+function drawTile(tile, j, i) {
+    context.drawImage(tile, j * tileSize, i * tileSize, tileSize, tileSize)
+}
+
+function createMap() {
+
+    // Map[Y][X]
+    for (let i = 0; i < 21; i++) {
+        for (let j = 0; j < 19; j++) {
+
+            if (map[i][j] == 0) { // if wall
+
+                let rightBool = false;
+                let leftBool = false;
+                let upBool = false;
+                let downBool = false;
+                let boolCount = 0;
+
+                if (j - 1 < 19 && (map[i][j + 1] == 1 || map[i][j + 1] == 2)) { // Look Right
+                    rightBool = true;
+                    boolCount++;
+                }
+
+                if (j - 1 > 0 && (map[i][j - 1] == 1 || map[i][j - 1] == 2)) { // Look Left
+                    leftBool = true;
+                    boolCount++;
+                }
+
+                if (i + 1 < 21 && (map[i + 1][j] == 1 || map[i + 1][j] == 2)) { // Look Down
+                    downBool = true;
+                    boolCount++;
+                }
+
+                if (i - 1 > 0 && (map[i - 1][j] == 1 || map[i - 1][j] == 2)) { // Look Up
+                    upBool = true;
+                    boolCount++;
+                }
+
+                switch (boolCount) {
+                    case 1:
+                        if (rightBool) {
+                            drawTile(rightWall, j, i)
+                        }
+                        else if (leftBool) {
+                            drawTile(leftWall, j, i)
+                        }
+                        else if (upBool) {
+                            drawTile(upWall, j, i)
+                        }
+                        else if (downBool) {
+                            drawTile(downWall, j, i)
+                        }
+                        break;
+                    case 2:
+                        if (upBool && downBool) {
+                            drawTile(upDownWall, j, i)
+                        }
+                        else if (rightBool && leftBool) {
+                            drawTile(rightLeftWall, j, i)
+                        }
+                        else if (rightBool && upBool) {
+                            drawTile(upRightWall, j, i)
+                        }
+                        else if (rightBool && downBool) {
+                            drawTile(downRightWall, j, i)
+                        }
+                        else if (leftBool && upBool) {
+                            drawTile(upLeftWall, j, i)
+                        }
+                        else if (leftBool && downBool) {
+                            drawTile(downLeftWall, j, i)
+                        }
+                        break;
+                    case 3:
+                        if (!upBool) {
+                            drawTile(Xdown, j, i)
+                        }
+                        else if (!downBool) {
+                            drawTile(Xup, j, i)
+                        }
+                        else if (!rightBool) {
+                            drawTile(Xleft, j, i)
+                        }
+                        else if (!leftBool) {
+                            drawTile(Xright, j, i)
+                        }
+                        break;
+                }
+            }
+            else if (map[i][j] == 1) { // If Walk Way
+                drawTile(bait, j, i)
+            }
+            else if (map[i][j] == 2) {
+                //drawTile(block, j, i)
+                context.fillStyle = "black"
+                context.fillRect(playerX - midPoint, playerY - midPoint, tileSize, tileSize);
+            }
+        }
+    }
+}
+
+function predictDirection(tempDirection) {
 
     intervalDirection = setTimeout(() => {
 
-        if(playerX % tileSize == midPoint && playerY % tileSize == midPoint){
+        if (playerX % tileSize == midPoint && playerY % tileSize == midPoint) {
             directions(tempDirection)
             clearTimeout();
         }
-        else{
+        else {
             predictDirection(tempDirection);
-        }   
-    },10);
+        }
+    }, 10);
 
 }
 
 const allDirections = {
-    UP : "up",
-    DOWN : "down",
-    LEFT : "left",
-    RIGHT : "right"
+    UP: "up",
+    DOWN: "down",
+    LEFT: "left",
+    RIGHT: "right"
 }
 
-function directions(direction){
+function directions(direction) {
 
-    if(direction == allDirections.UP){
+    if (direction == allDirections.UP) {
         up = true;
         down = false;
         right = false;
         left = false;
     }
-    else if (direction == allDirections.DOWN){
+    else if (direction == allDirections.DOWN) {
         down = true;
         up = false;
         right = false;
         left = false;
     }
-    else if (direction == allDirections.RIGHT){
+    else if (direction == allDirections.RIGHT) {
         down = false;
         up = false;
         right = true;
         left = false;
     }
-    else if (direction == allDirections.LEFT){
+    else if (direction == allDirections.LEFT) {
         down = false;
         up = false;
         right = false;
         left = true;
     }
-    else if (direction == "space"){
+    else if (direction == "space") {
         left = false;
         right = false;
         up = false;
@@ -142,7 +330,7 @@ function changeDirection(event) {
     switch (keyPressed) {
         case upNum:
             // sağa veya sola giderken yukarı basılırsa:
-            if((right && !collusion) || (left && !collusion)){
+            if ((right && !collusion) || (left && !collusion)) {
                 predictDirection(allDirections.UP);
             }
             else {
@@ -151,7 +339,7 @@ function changeDirection(event) {
             break;
         case downNum:
             // sağa veya sola giderken aşağı basılırsa
-            if((right && !collusion) || (left && !collusion)){
+            if ((right && !collusion) || (left && !collusion)) {
                 predictDirection(allDirections.DOWN);
             }
             else {
@@ -160,7 +348,7 @@ function changeDirection(event) {
             break;
         case rightNum:
             // yukarı veya aşağı giderken sağa basılırsa
-            if((up && !collusion) || (down && !collusion)){
+            if ((up && !collusion) || (down && !collusion)) {
                 predictDirection(allDirections.RIGHT);
             }
             else {
@@ -169,7 +357,7 @@ function changeDirection(event) {
             break;
         case leftNum:
             // yukarı veya aşağı giderken sola basılırsa
-            if((up && !collusion) || (down && !collusion)){
+            if ((up && !collusion) || (down && !collusion)) {
                 predictDirection(allDirections.LEFT);
             }
             else {
@@ -182,13 +370,13 @@ function changeDirection(event) {
     }
 }
 
-function teleportRight(){
+function teleportRight() {
     if (playerX > gameHeight + midPoint) {
         playerX = 0 - midPoint;
     }
 }
 
-function teleportLeft(){
+function teleportLeft() {
     if (playerX + tileSize + midPoint < tileSize) {
         playerX = 20 * tileSize
     }
@@ -200,23 +388,23 @@ function movePlayer() {
 
     if (!collusion) {
         if (up) {
-            if(playerX % tileSize == 15){
+            if (playerX % tileSize == 15) {
                 playerY = playerY - speed;
             }
         }
         else if (down) {
-            if(playerX % tileSize == 15){ 
+            if (playerX % tileSize == 15) {
                 playerY = playerY + speed;
             }
         }
         else if (right) {
-            if(playerY % tileSize == 15){
+            if (playerY % tileSize == 15) {
                 playerX = playerX + speed;
             }
             teleportRight();
         }
         else if (left) {
-            if(playerY % tileSize == 15){
+            if (playerY % tileSize == 15) {
                 playerX = playerX - speed;
             }
             teleportLeft();
@@ -224,52 +412,84 @@ function movePlayer() {
     }
 }
 
-function drawMap(map) {
+function imageChanger() {
 
-    // i = Height // j = Width
-
-    for (let i = 0; i < 21; i++) {
-        for (let j = 0; j < 19; j++) {
-            if (map[i][j] == 1) {
-                context.fillStyle = "black";
-                context.fillRect(j * tileSize, i * tileSize, tileSize, tileSize)
-            }
-            else if (map[i][j] == 0) {
-                context.fillStyle = "lightblue";
-                context.fillRect(j * tileSize, i * tileSize, tileSize, tileSize)
-            }
+    playerIntervalID = setTimeout(() => {
+        if (changeImg == 1) {
+            mouthOpen = true;
+            changeImg = 2;
+        } else if (changeImg == 2) {
+            mouthOpen = false;
+            changeImg = 1;
         }
-    }
+        imageChanger();
+    }, 200);
+}
+
+function rotateAndPaintImage(image, angleInRad) {
+    context.translate(playerX, playerY);
+    context.rotate(angleInRad * TO_RADIANS);
+    context.drawImage(image, -midPoint, -midPoint);
+    context.rotate(-angleInRad * TO_RADIANS);
+    context.translate(-playerX, -playerY);
 }
 
 function drawPlayer() {
 
-    //context.drawImage(playerImage, playerX, playerY);
-
-    context.beginPath();
-    context.arc(playerX, playerY, tileSize / 2, 0, 2 * Math.PI, false);
-    context.lineWidth = 3;
-    context.fillStyle = "yellow"
-    context.fill();
+    if (mouthOpen) {
+        if (up) {
+            rotateAndPaintImage(pacmanOpen, 270);
+        }
+        else if (down) {
+            rotateAndPaintImage(pacmanOpen, 90);
+        }
+        else if (right) {
+            rotateAndPaintImage(pacmanOpen, 0);
+        }
+        else if (left) {
+            rotateAndPaintImage(pacmanOpen, 180);
+        }
+    }
+    else {
+        if (up) {
+            rotateAndPaintImage(pacmanClose, 270);
+        }
+        else if (down) {
+            rotateAndPaintImage(pacmanClose, 90);
+        }
+        else if (right) {
+            rotateAndPaintImage(pacmanClose, 0);
+        }
+        else if (left) {
+            rotateAndPaintImage(pacmanClose, 180);
+        }
+    }
 }
 
 function nextTick() {
 
     intervalID = setTimeout(() => {
-        drawMap(map);
+        createMap();
+        movePlayer()
         drawPlayer();
-        movePlayer();
+        collectScore();
         nextTick();
     }, 10);
 }
 
 function clock() {
 
-    setTimeout(() => {
-        timerClock.innerHTML = startTime - changedTime;
-        changedTime++;
-        clock();
-    }, 1000);
+    if (currentTime > 0) {
+        setTimeout(() => {
+            currentTime = startTime - changedTime
+            timerClock.innerHTML = currentTime;
+            changedTime++;
+            clock();
+        }, 1000);
+    }
+    else{
+        gameOver = true;
+    }
 }
 
 function isCollied() {
