@@ -152,8 +152,9 @@ let changeImg = 1;
 
 // Game Variables
 let lives = 3;
-let point = -10;
-let maxPoint = 1840;
+let dies = 0;
+let score = 953;
+let maxScore = 9648;
 
 // First Run
 let player = new Player();
@@ -170,11 +171,35 @@ function showMap() {
     }
 }
 
+function liveCounter() {
+    let liveImage = ""
+
+    for (let i = 1; i <= lives; i++) {
+        liveImage = liveImage + "❤️"
+    }
+
+    for (let j = dies; j > 0; j--) {
+        liveImage = liveImage + "🤍"
+    }
+
+    if (lives < 0) {
+        liveImage = "🤍🤍🤍"
+    }
+
+    return liveImage;
+}
+
 function heartImages() {
 
-    let liveImage = ""
+
     for (let i = 0; i < lives; i++) {
         liveImage = liveImage + "❤️"
+    }
+
+    if (lives >= 0) {
+        for (let j = 0; j < dies; j++) {
+            liveImage = liveImage + "❤"
+        }
     }
 
     return liveImage;
@@ -208,7 +233,8 @@ function monsterCollision() {
             setPlayerBaseCoordinates();
 
             lives--;
-            livesLabel.innerHTML = "Lives: " + heartImages();
+            dies++;
+            livesLabel.innerHTML = "Lives: " + liveCounter();
         }
     }
     else {
@@ -259,10 +285,10 @@ function collectScore() {
     if (map[locationY][locationX] == 1) {
         map[locationY][locationX] = 2;
 
-        point = point + 10;
-        scoreText.innerHTML = "Score: " + point;
-
-        if (point == maxPoint) {
+        score = score + 47;
+        scoreText.innerHTML = "Score: " + score;
+        
+        if (score == maxScore) {
             displayGameOver();
         }
     }
