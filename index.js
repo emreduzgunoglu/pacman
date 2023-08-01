@@ -7,7 +7,6 @@ const pacmanLabel = document.querySelector("#pacmanText")
 const restartButton = document.querySelector("#RestartButton")
 restartButton.addEventListener("click", closeGame);
 window.addEventListener("keydown", changeDirection)
-
 window.addEventListener("keydown", function (e) {
     if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
         e.preventDefault();
@@ -69,14 +68,8 @@ let down = true;
 let right = false;
 let left = false;
 
-let running = true;
-
-// Game States
-let gameState = {
-    Start: true,
-    Pause : false,
-    End : false
-}
+// Game State
+let running = false;
 
 // MAP
 const map = [
@@ -103,21 +96,13 @@ const map = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
-// First Run
-let player = new Player();
-let monster = new Monster();
-
-clock();
-nextTick();
-imageChanger();
-monsterDirection(monster)
-
 let gameOver = false;
 
 // All Images
 const mosnterImg = document.createElement("img");
-mosnterImg.src = './img/monster/Monster_red.png'
+mosnterImg.src = './img/monster/Monster_red2.png'
 
+// 1-Way Wall
 const upWall = document.createElement("img");
 upWall.src = './img/wall/up.png'
 const downWall = document.createElement("img");
@@ -127,6 +112,7 @@ leftWall.src = './img/wall/left.png'
 const rightWall = document.createElement("img");
 rightWall.src = './img/wall/right.png'
 
+// 2-Way Wall
 const upLeftWall = document.createElement("img");
 upLeftWall.src = './img/wall/up_left.png'
 const upRightWall = document.createElement("img");
@@ -136,11 +122,13 @@ downLeftWall.src = './img/wall/down_left.png'
 const downRightWall = document.createElement("img");
 downRightWall.src = './img/wall/down_right.png'
 
+// 2-Way Parallel Wall
 const upDownWall = document.createElement("img");
 upDownWall.src = './img/wall/up_down.png'
 const rightLeftWall = document.createElement("img");
 rightLeftWall.src = './img/wall/right_left.png'
 
+// 3-Way Wall
 const Xup = document.createElement("img");
 Xup.src = './img/wall/Xup.png'
 const Xdown = document.createElement("img");
@@ -150,61 +138,83 @@ Xleft.src = './img/wall/Xleft.png'
 const Xright = document.createElement("img");
 Xright.src = './img/wall/Xright.png'
 
+// Special PNG
+const pacmanOpen = document.createElement("img");
+pacmanOpen.src = './img/player/ELDopen.png'
+const pacmanClose = document.createElement("img");
+pacmanClose.src = './img/player/ELDclose.png'
 const bait = document.createElement("img");
 bait.src = './img/wall/bait.png'
 
-const block = document.createElement("img");
-block.src = './img/wall/block.png'
-
-//const blockX = 9
-
-const black = document.createElement("img");
-black.src = './img/wall/black.png'
-
-const pacmanOpen = document.createElement("img");
-//pacmanOpen.id = "pacman";
-pacmanOpen.src = './img/player/ELDopen.png'
-
-const pacmanClose = document.createElement("img");
-pacmanClose.src = './img/player/ELDclose.png'
-
+// Pacman Image Change
 let mouthOpen = false;
 let changeImg = 1;
 
+// Game Variables
 let lives = 3;
 let point = -10;
+let maxPoint = 1840;
 
-function heartImages(){
+// First Run
+let player = new Player();
+let monster = new Monster();
+showMap();
+timerClock.innerHTML = "Press Enter to Start"
 
-    let liveImage =""
-    for(let i = 0; i < lives; i++){
+function showMap() {
+    if (!running) {
+        setTimeout(() => {
+            createMap();
+            showMap();
+        }, 10);
+    }
+}
+
+function heartImages() {
+
+    let liveImage = ""
+    for (let i = 0; i < lives; i++) {
         liveImage = liveImage + "❤️"
     }
 
     return liveImage;
 }
 
-function monsterCollision(){
+function setEntityStay(entity) {
 
-    if(lives >= 0){
+    entity.direction.UP = false
+    entity.direction.DOWN = false
+    entity.direction.LEFT = false
+    entity.direction.RIGHT = false
+    entity.direction.STAY = true
+}
+
+function setPlayerBaseCoordinates() {
+    player.X = tileSize * 9 + midPoint
+    player.Y = tileSize * 15 + midPoint
+}
+
+function monsterCollision() {
+
+    if (lives >= 0) {
         let playerLocationX = Math.round((player.X - midPoint) / tileSize)
         let playerLocationY = Math.round((player.Y - midPoint) / tileSize)
-    
+
         let monsterLocationX = Math.round((monster.X - midPoint) / tileSize)
         let monsterLocationY = Math.round((monster.Y - midPoint) / tileSize)
-    
-        if((playerLocationX == monsterLocationX) && (playerLocationY == monsterLocationY)){
-            player.X = tileSize * 9 + midPoint
-            player.Y = tileSize * 15 + midPoint
-    
+
+        if ((playerLocationX == monsterLocationX) && (playerLocationY == monsterLocationY)) {
+            setEntityStay(player);
+            setPlayerBaseCoordinates();
+
             lives--;
             livesLabel.innerHTML = "Lives: " + heartImages();
         }
     }
-    else{
+    else {
         displayGameOver();
     }
-    
+
 }
 
 function drawMonster(monster) {
@@ -215,7 +225,7 @@ function monsterDirection(monster) {
 
     let rand = Math.floor(Math.random() * 4) + 1;
 
-    if(monster.collision){
+    if (monster.collision) {
         switch (rand) {
             case 1:
                 directions(monster, "up")
@@ -234,11 +244,10 @@ function monsterDirection(monster) {
 }
 
 function displayGameOver() {
-
-    pacmanLabel.innerHTML = "< Game Over >"
+    timerClock.innerHTML = " Game Over!"
 }
 
-function displayGameStart(){
+function displayGameStart() {
 
     timerClock.innerHTML = "Press Arrow Keys To Start"
 }
@@ -253,7 +262,7 @@ function collectScore() {
         point = point + 10;
         scoreText.innerHTML = "Score: " + point;
 
-        if(point == 1850){
+        if (point == maxPoint) {
             displayGameOver();
         }
     }
@@ -380,13 +389,6 @@ function predictDirection(tempDirection) {
 
 }
 
-/* const allDirections = {
-    UP: "up",
-    DOWN: "down",
-    LEFT: "left",
-    RIGHT: "right"
-} */
-
 function directions(entity, direction) {
 
     if (direction == "up") {
@@ -427,7 +429,6 @@ function directions(entity, direction) {
 }
 
 function changeDirection(event) {
-
     const keyPressed = event.keyCode;
 
     const upNum = 38;
@@ -435,6 +436,7 @@ function changeDirection(event) {
     const rightNum = 39;
     const leftNum = 37;
     const space = 32;
+    const enter = 13;
 
     switch (keyPressed) {
         case upNum:
@@ -475,6 +477,15 @@ function changeDirection(event) {
             break;
         case space:
             directions(player, "space");
+            break;
+        case enter:
+            if (!running) {
+                running = true;
+                timerClock.innerHTML = startTime;
+                nextTick();
+                clock();
+                imageChanger();
+            }
             break;
     }
 }
@@ -594,9 +605,10 @@ function nextTick() {
         movePlayer(player)
         drawPlayer();
         collectScore();
+
         monsterDirection(monster)
-        drawMonster(monster);
         movePlayer(monster)
+        drawMonster(monster);
 
         monsterCollision();
         nextTick();

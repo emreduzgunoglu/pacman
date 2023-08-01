@@ -1,11 +1,13 @@
 #gamePanel {
     text-align: center;
-    background-image: url('https://wallpaperaccess.com/full/343619.jpg');
+    background-image: url('https://images.hdqwalls.com/wallpapers/pacman-256-b2.jpg');
 
     /* Center and scale the image nicely */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+
+    min-height: 100vh;
 }
 
 #gameFrame {
