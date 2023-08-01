@@ -46,6 +46,7 @@ class Player {
 let intervalID;
 let playerIntervalID;
 let intervalDirection;
+let timerIntervalID;
 
 // Monster
 class Monster {
@@ -99,8 +100,8 @@ const map = [
 let gameOver = false;
 
 // All Images
-const mosnterImg = document.createElement("img");
-mosnterImg.src = './img/monster/Monster_red2.png'
+const redMonster = document.createElement("img");
+redMonster.src = './img/monster/Monster_red2.png'
 
 // 1-Way Wall
 const upWall = document.createElement("img");
@@ -153,7 +154,7 @@ let changeImg = 1;
 // Game Variables
 let lives = 3;
 let dies = 0;
-let score = 953;
+let score = 9500;
 let maxScore = 9648;
 
 // First Run
@@ -166,6 +167,8 @@ function showMap() {
     if (!running) {
         setTimeout(() => {
             createMap();
+            context.drawImage(pacmanOpen, player.X - midPoint, player.Y - midPoint)
+            context.drawImage(redMonster, monster.X - midPoint, monster.Y - midPoint)
             showMap();
         }, 10);
     }
@@ -244,7 +247,7 @@ function monsterCollision() {
 }
 
 function drawMonster(monster) {
-    context.drawImage(mosnterImg, monster.X - midPoint, monster.Y - midPoint)
+    context.drawImage(redMonster, monster.X - midPoint, monster.Y - midPoint)
 }
 
 function monsterDirection(monster) {
@@ -270,11 +273,15 @@ function monsterDirection(monster) {
 }
 
 function displayGameOver() {
+    running = false;
+    clearTimeout(timerIntervalID);
     timerClock.innerHTML = " Game Over!"
+    
+    setEntityStay(player);
+    setPlayerBaseCoordinates();
 }
 
 function displayGameStart() {
-
     timerClock.innerHTML = "Press Arrow Keys To Start"
 }
 
@@ -287,8 +294,8 @@ function collectScore() {
 
         score = score + 47;
         scoreText.innerHTML = "Score: " + score;
-        
-        if (score == maxScore) {
+
+        if (score > maxScore) {
             displayGameOver();
         }
     }
@@ -644,7 +651,7 @@ function nextTick() {
 function clock() {
 
     if (currentTime > 0) {
-        setTimeout(() => {
+        timerIntervalID = setTimeout(() => {
             currentTime = startTime - changedTime
             timerClock.innerHTML = currentTime;
             changedTime++;
