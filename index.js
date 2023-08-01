@@ -2,6 +2,8 @@
 const gameFrame = document.querySelector("#gameFrame")
 const context = gameFrame.getContext("2d");
 const scoreText = document.querySelector("#scoreLabel")
+const livesLabel = document.querySelector("#livesLabel")
+const pacmanLabel = document.querySelector("#pacmanText")
 const restartButton = document.querySelector("#RestartButton")
 restartButton.addEventListener("click", closeGame);
 window.addEventListener("keydown", changeDirection)
@@ -12,13 +14,6 @@ window.addEventListener("keydown", function (e) {
     }
 }, false);
 
-// Timer 
-let timerClock = document.querySelector("#timer");
-let startTime = 60;
-let currentTime = startTime;
-timerClock.innerHTML = currentTime
-let changedTime = 0;
-
 // Game Frame
 const gameWidth = gameFrame.height; // 630px
 const gameHeight = gameFrame.width; // 570px  //21x19
@@ -27,17 +22,25 @@ const speed = 2.5;
 var TO_RADIANS = Math.PI / 180;
 let midPoint = tileSize / 2; //15 
 
+// Timer 
+let timerClock = document.querySelector("#timer");
+let startTime = 60;
+let currentTime = startTime;
+timerClock.innerHTML = currentTime
+let changedTime = 0;
+
 // Player 
 class Player {
     X = tileSize * 9 + midPoint
-    Y = tileSize * 9 + midPoint
+    Y = tileSize * 15 + midPoint
     collision = false;
 
     direction = {
-        UP: "up",
-        DOWN: "down",
-        LEFT: "left",
-        RIGHT: "right"
+        UP: false,
+        DOWN: false,
+        LEFT: false,
+        RIGHT: false,
+        STAY: true
     }
 }
 
@@ -47,15 +50,16 @@ let intervalDirection;
 
 // Monster
 class Monster {
-    X = tileSize * 10 + midPoint
-    Y = tileSize * 15 + midPoint
+    X = tileSize * 9 + midPoint
+    Y = tileSize * 9 + midPoint
     collision = false;
 
     direction = {
-        UP: "up",
-        DOWN: "down",
-        LEFT: "left",
-        RIGHT: "right"
+        UP: true,
+        DOWN: false,
+        LEFT: false,
+        RIGHT: false,
+        STAY: false
     }
 }
 
@@ -66,6 +70,13 @@ let right = false;
 let left = false;
 
 let running = true;
+
+// Game States
+let gameState = {
+    Start: true,
+    Pause : false,
+    End : false
+}
 
 // MAP
 const map = [
@@ -95,9 +106,11 @@ const map = [
 // First Run
 let player = new Player();
 let monster = new Monster();
+
 clock();
 nextTick();
 imageChanger();
+monsterDirection(monster)
 
 let gameOver = false;
 
@@ -149,51 +162,85 @@ const black = document.createElement("img");
 black.src = './img/wall/black.png'
 
 const pacmanOpen = document.createElement("img");
-pacmanOpen.id = "pacman";
-pacmanOpen.src = './img/player/pacmanOpen.png'
+//pacmanOpen.id = "pacman";
+pacmanOpen.src = './img/player/ELDopen.png'
 
 const pacmanClose = document.createElement("img");
-pacmanClose.src = './img/player/pacmanClose.png'
+pacmanClose.src = './img/player/ELDclose.png'
 
 let mouthOpen = false;
 let changeImg = 1;
 
-let point = 0;
+let lives = 3;
+let point = -10;
 
-function drawMonster(monster) {
+function heartImages(){
 
-    context.fillStyle = "red";
-    context.drawImage(mosnterImg, monster.X - midPoint, monster.Y - midPoint)
-    //monster.Y = monster.Y - speed;
+    let liveImage =""
+    for(let i = 0; i < lives; i++){
+        liveImage = liveImage + "❤️"
+    }
+
+    return liveImage;
 }
 
-function monsterDirection(monster){
+function monsterCollision(){
+
+    if(lives >= 0){
+        let playerLocationX = Math.round((player.X - midPoint) / tileSize)
+        let playerLocationY = Math.round((player.Y - midPoint) / tileSize)
+    
+        let monsterLocationX = Math.round((monster.X - midPoint) / tileSize)
+        let monsterLocationY = Math.round((monster.Y - midPoint) / tileSize)
+    
+        if((playerLocationX == monsterLocationX) && (playerLocationY == monsterLocationY)){
+            player.X = tileSize * 9 + midPoint
+            player.Y = tileSize * 15 + midPoint
+    
+            lives--;
+            livesLabel.innerHTML = "Lives: " + heartImages();
+        }
+    }
+    else{
+        displayGameOver();
+    }
+    
+}
+
+function drawMonster(monster) {
+    context.drawImage(mosnterImg, monster.X - midPoint, monster.Y - midPoint)
+}
+
+function monsterDirection(monster) {
 
     let rand = Math.floor(Math.random() * 4) + 1;
 
-    switch (rand) {
-        case 1:
-            monster.direction.UP = true;
-            break;
-        case 2:
-            monster.direction.DOWN = true;
-            break;
-        case 3:
-            monster.direction.LEFT = true;
-            break;
-        case 4:
-            monster.direction.RIGHT = true;
-            break;
+    if(monster.collision){
+        switch (rand) {
+            case 1:
+                directions(monster, "up")
+                break;
+            case 2:
+                directions(monster, "down")
+                break;
+            case 3:
+                directions(monster, "left")
+                break;
+            case 4:
+                directions(monster, "right")
+                break;
+        }
     }
 }
 
-// MAX SCORE = 1890
 function displayGameOver() {
 
-    if (score == 1890) {
+    pacmanLabel.innerHTML = "< Game Over >"
+}
 
-    }
+function displayGameStart(){
 
+    timerClock.innerHTML = "Press Arrow Keys To Start"
 }
 
 function collectScore() {
@@ -205,6 +252,10 @@ function collectScore() {
 
         point = point + 10;
         scoreText.innerHTML = "Score: " + point;
+
+        if(point == 1850){
+            displayGameOver();
+        }
     }
 }
 
@@ -319,7 +370,7 @@ function predictDirection(tempDirection) {
     intervalDirection = setTimeout(() => {
 
         if (player.X % tileSize == midPoint && player.Y % tileSize == midPoint) {
-            directions(tempDirection)
+            directions(player, tempDirection)
             clearTimeout();
         }
         else {
@@ -329,44 +380,49 @@ function predictDirection(tempDirection) {
 
 }
 
-const allDirections = {
+/* const allDirections = {
     UP: "up",
     DOWN: "down",
     LEFT: "left",
     RIGHT: "right"
-}
+} */
 
-function directions(direction) {
+function directions(entity, direction) {
 
-    if (direction == allDirections.UP) {
-        up = true;
-        down = false;
-        right = false;
-        left = false;
+    if (direction == "up") {
+        entity.direction.UP = true;
+        entity.direction.DOWN = false;
+        entity.direction.RIGHT = false;
+        entity.direction.LEFT = false;
+        entity.direction.STAY = false;
     }
-    else if (direction == allDirections.DOWN) {
-        down = true;
-        up = false;
-        right = false;
-        left = false;
+    else if (direction == "down") {
+        entity.direction.UP = false;
+        entity.direction.DOWN = true;
+        entity.direction.RIGHT = false;
+        entity.direction.LEFT = false;
+        entity.direction.STAY = false;
     }
-    else if (direction == allDirections.RIGHT) {
-        down = false;
-        up = false;
-        right = true;
-        left = false;
+    else if (direction == "right") {
+        entity.direction.UP = false;
+        entity.direction.DOWN = false;
+        entity.direction.RIGHT = true;
+        entity.direction.LEFT = false;
+        entity.direction.STAY = false;
     }
-    else if (direction == allDirections.LEFT) {
-        down = false;
-        up = false;
-        right = false;
-        left = true;
+    else if (direction == "left") {
+        entity.direction.UP = false;
+        entity.direction.DOWN = false;
+        entity.direction.RIGHT = false;
+        entity.direction.LEFT = true;
+        entity.direction.STAY = false;
     }
     else if (direction == "space") {
-        left = false;
-        right = false;
-        up = false;
-        down = false;
+        entity.direction.UP = false;
+        entity.direction.DOWN = false;
+        entity.direction.RIGHT = false;
+        entity.direction.LEFT = false;
+        entity.direction.STAY = true;
     }
 }
 
@@ -383,42 +439,42 @@ function changeDirection(event) {
     switch (keyPressed) {
         case upNum:
             // sağa veya sola giderken yukarı basılırsa:
-            if ((right && !player.collision) || (left && !player.collision)) {
-                predictDirection(allDirections.UP);
+            if ((player.direction.RIGHT && !player.collision) || (player.direction.LEFT && !player.collision)) {
+                predictDirection("up");
             }
             else {
-                directions(allDirections.UP);
+                directions(player, "up");
             }
             break;
         case downNum:
             // sağa veya sola giderken aşağı basılırsa
-            if ((right && !player.collision) || (left && !player.collision)) {
-                predictDirection(allDirections.DOWN);
+            if ((player.direction.RIGHT && !player.collision) || (player.direction.LEFT && !player.collision)) {
+                predictDirection("down");
             }
             else {
-                directions(allDirections.DOWN);
+                directions(player, "down");
             }
             break;
         case rightNum:
             // yukarı veya aşağı giderken sağa basılırsa
-            if ((up && !player.collision) || (down && !player.collision)) {
-                predictDirection(allDirections.RIGHT);
+            if ((player.direction.UP && !player.collision) || (player.direction.DOWN && !player.collision)) {
+                predictDirection("right");
             }
             else {
-                directions(allDirections.RIGHT);
+                directions(player, "right");
             }
             break;
         case leftNum:
             // yukarı veya aşağı giderken sola basılırsa
-            if ((up && !player.collision) || (down && !player.collision)) {
-                predictDirection(allDirections.LEFT);
+            if ((player.direction.UP && !player.collision) || (player.direction.DOWN && !player.collision)) {
+                predictDirection("left");
             }
             else {
-                directions(allDirections.LEFT)
+                directions(player, "left")
             }
             break;
         case space:
-            directions("space");
+            directions(player, "space");
             break;
     }
 }
@@ -440,23 +496,23 @@ function movePlayer(entity) {
     isCollied(entity);
 
     if (!entity.collision) {
-        if (up) {
+        if (entity.direction.UP) {
             if (entity.X % tileSize == 15) {
                 entity.Y = entity.Y - speed;
             }
         }
-        else if (down) {
+        else if (entity.direction.DOWN) {
             if (entity.X % tileSize == 15) {
                 entity.Y = entity.Y + speed;
             }
         }
-        else if (right) {
+        else if (entity.direction.RIGHT) {
             if (entity.Y % tileSize == 15) {
                 entity.X = entity.X + speed;
             }
             teleportRight();
         }
-        else if (left) {
+        else if (entity.direction.LEFT) {
             if (entity.Y % tileSize == 15) {
                 entity.X = entity.X - speed;
             }
@@ -490,31 +546,37 @@ function rotateAndPaintImage(image, angleInRad) {
 function drawPlayer() {
 
     if (mouthOpen) {
-        if (up) {
+        if (player.direction.UP) {
             rotateAndPaintImage(pacmanOpen, 270);
         }
-        else if (down) {
+        else if (player.direction.DOWN) {
             rotateAndPaintImage(pacmanOpen, 90);
         }
-        else if (right) {
+        else if (player.direction.RIGHT) {
             rotateAndPaintImage(pacmanOpen, 0);
         }
-        else if (left) {
+        else if (player.direction.LEFT) {
             rotateAndPaintImage(pacmanOpen, 180);
+        }
+        else if (player.direction.STAY) {
+            rotateAndPaintImage(pacmanOpen, 0);
         }
     }
     else {
-        if (up) {
+        if (player.direction.UP) {
             rotateAndPaintImage(pacmanClose, 270);
         }
-        else if (down) {
+        else if (player.direction.DOWN) {
             rotateAndPaintImage(pacmanClose, 90);
         }
-        else if (right) {
+        else if (player.direction.RIGHT) {
             rotateAndPaintImage(pacmanClose, 0);
         }
-        else if (left) {
+        else if (player.direction.LEFT) {
             rotateAndPaintImage(pacmanClose, 180);
+        }
+        else if (player.direction.STAY) {
+            rotateAndPaintImage(pacmanClose, 0);
         }
     }
 }
@@ -532,8 +594,11 @@ function nextTick() {
         movePlayer(player)
         drawPlayer();
         collectScore();
+        monsterDirection(monster)
         drawMonster(monster);
         movePlayer(monster)
+
+        monsterCollision();
         nextTick();
     }, 10);
 }
@@ -545,7 +610,6 @@ function clock() {
             currentTime = startTime - changedTime
             timerClock.innerHTML = currentTime;
             changedTime++;
-            monsterDirection(monster);
             clock();
         }, 1000);
     }
@@ -559,7 +623,7 @@ function isCollied(entity) {
     let x = (entity.X) / tileSize;
     let y = (entity.Y) / tileSize;
 
-    if (up) {
+    if (entity.direction.UP) {
         if ((map[Math.floor(y - 0.55)][Math.floor(x)] == 0)) {
             entity.collision = true;
         }
@@ -567,7 +631,7 @@ function isCollied(entity) {
             entity.collision = false;
         }
     }
-    else if (down) {
+    else if (entity.direction.DOWN) {
         if (map[Math.floor(y + 0.5)][Math.floor(x)] == 0) {
             entity.collision = true;
         }
@@ -575,7 +639,7 @@ function isCollied(entity) {
             entity.collision = false;
         }
     }
-    else if (right) {
+    else if (entity.direction.RIGHT) {
         if (map[Math.floor(y)][Math.floor(x + 0.5)] == 0) {
             entity.collision = true;
         }
@@ -583,7 +647,7 @@ function isCollied(entity) {
             entity.collision = false;
         }
     }
-    else if (left) {
+    else if (entity.direction.LEFT) {
         if (map[Math.floor(y)][Math.floor(x - 0.55)] == 0) {
             entity.collision = true;
         }
