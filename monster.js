@@ -1,9 +1,10 @@
 import * as main from "../index.js";
 
 export class Monster {
-    constructor(X, Y, Speed) {
+    constructor(X, Y, color) {
         this.X = X;
         this.Y = Y;
+        this.color = color
     }
 
     X = main.tileSize * 9 + main.midPoint

@@ -66,6 +66,8 @@ const map = [
 let gameOver = false;
 
 // All Images //
+const blueMonster = document.createElement("img");
+blueMonster.src = './img/monster/Monster_Blue.png'
 const redMonster = document.createElement("img");
 redMonster.src = './img/monster/Monster_red2.png'
 
@@ -120,10 +122,34 @@ let baseCoordinateY = tileSize * 15 + midPoint
 
 // First Run
 let player = new playerClass.Player(baseCoordinateX, baseCoordinateY);
-let monster = new monsterClass.Monster(tileSize * 9 + midPoint, tileSize * 9 + midPoint);
+let monster = new monsterClass.Monster(tileSize * 12 + midPoint, tileSize * 7 + midPoint, "red");
+let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue");
 monster.direction.UP = true;
+monster2.direction.UP = true;
+
+// Map Locations
+let playerLocationX;
+let playerLocationY;
+
+let monsterLocationX;
+let monsterLocationY;
+
+let monster2LocationX;
+let monster2LocationY;
+
 showMap();
-timerClock.innerHTML = "Press Enter to Start"
+displayGameStart();
+
+function updateAllEntityLocations() {
+    playerLocationX = Math.round((player.X - midPoint) / tileSize)
+    playerLocationY = Math.round((player.Y - midPoint) / tileSize)
+
+    monsterLocationX = Math.round((monster.X - midPoint) / tileSize)
+    monsterLocationY = Math.round((monster.Y - midPoint) / tileSize)
+
+    monster2LocationX = Math.round((monster2.X - midPoint) / tileSize)
+    monster2LocationY = Math.round((monster2.Y - midPoint) / tileSize)
+}
 
 function showMap() {
     if (!running) {
@@ -131,6 +157,7 @@ function showMap() {
             createMap();
             context.drawImage(playerClass.pacmanOpen, player.X - midPoint, player.Y - midPoint)
             context.drawImage(redMonster, monster.X - midPoint, monster.Y - midPoint)
+            context.drawImage(blueMonster, monster2.X - midPoint, monster2.Y - midPoint)
             showMap();
         }, 10);
     }
@@ -154,22 +181,6 @@ function liveCounter() {
     return liveImage;
 }
 
-function heartImages() {
-
-
-    for (let i = 0; i < lives; i++) {
-        liveImage = liveImage + "❤️"
-    }
-
-    if (lives >= 0) {
-        for (let j = 0; j < dies; j++) {
-            liveImage = liveImage + "❤"
-        }
-    }
-
-    return liveImage;
-}
-
 function setEntityStay(entity) {
 
     entity.direction.UP = false
@@ -179,23 +190,29 @@ function setEntityStay(entity) {
     entity.direction.STAY = true
 }
 
-function setPlayerBaseCoordinates() {
+function teleportPlayerToBase() {
     player.X = baseCoordinateX
     player.Y = baseCoordinateY
 }
 
-function monsterCollision() {
+function teleportMonstersToBase(){
+    monster.X = tileSize * 12 + midPoint
+    monster.Y = tileSize * 7 + midPoint
 
+    monster2.X = tileSize * 6 + midPoint
+    monster2.Y = tileSize * 7 + midPoint    
+}
+
+function monsterToPlayerCollision() {
     if (lives >= 0) {
-        let playerLocationX = Math.round((player.X - midPoint) / tileSize)
-        let playerLocationY = Math.round((player.Y - midPoint) / tileSize)
-
-        let monsterLocationX = Math.round((monster.X - midPoint) / tileSize)
-        let monsterLocationY = Math.round((monster.Y - midPoint) / tileSize)
-
-        if ((playerLocationX == monsterLocationX) && (playerLocationY == monsterLocationY)) {
+        if (((playerLocationX == monsterLocationX) && (playerLocationY == monsterLocationY)) ||
+            ((playerLocationX == monster2LocationX) && (playerLocationY == monster2LocationY))) {
             setEntityStay(player);
-            setPlayerBaseCoordinates();
+            teleportPlayerToBase();
+            teleportMonstersToBase();
+
+            context.drawImage(redMonster, monster.X - midPoint, monster.Y - midPoint)
+            context.drawImage(blueMonster, monster2.X - midPoint, monster2.Y - midPoint)
 
             lives--;
             dies++;
@@ -205,24 +222,31 @@ function monsterCollision() {
     else {
         displayGameOver();
     }
-
 }
 
 function drawMonster(monster) {
-    context.drawImage(redMonster, monster.X - midPoint, monster.Y - midPoint)
+
+    switch (monster.color) {
+        case "blue":
+            context.drawImage(blueMonster, monster.X - midPoint, monster.Y - midPoint)
+            break;
+        case "red":
+            context.drawImage(redMonster, monster.X - midPoint, monster.Y - midPoint)
+            break;
+    }
 }
 
 function displayGameOver() {
     running = false;
     clearTimeout(timerIntervalID);
     timerClock.innerHTML = " Game Over!"
-    
+
     setEntityStay(player);
-    setPlayerBaseCoordinates();
+    teleportPlayerToBase();
 }
 
 function displayGameStart() {
-    timerClock.innerHTML = "Press Arrow Keys To Start"
+    timerClock.innerHTML = "Press Enter to Start"
 }
 
 function collectScore() {
@@ -347,7 +371,7 @@ function createMap() {
     }
 }
 
-// main
+// Stays in main
 function changeDirection(event) {
     const keyPressed = event.keyCode;
 
@@ -450,15 +474,24 @@ function nextTick() {
     intervalID = setTimeout(() => {
         clearMap();
         createMap();
+        updateAllEntityLocations();
+
+        // Player
         movePlayer(player)
         playerClass.drawPlayer(player);
         collectScore();
 
+        // Monster1
         monsterClass.monsterDirection(monster)
         movePlayer(monster)
         drawMonster(monster);
 
-        monsterCollision();
+        //Monster2
+        monsterClass.monsterDirection(monster2)
+        movePlayer(monster2)
+        drawMonster(monster2);
+
+        monsterToPlayerCollision();
         nextTick();
     }, 10);
 }
