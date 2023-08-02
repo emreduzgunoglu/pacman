@@ -1,9 +1,12 @@
+import * as playerClass from "../player.js";
+import * as monsterClass from "../monster.js";
+
 // Game Constants
 const gameFrame = document.querySelector("#gameFrame")
-const context = gameFrame.getContext("2d");
+export const context = gameFrame.getContext("2d");
 const scoreText = document.querySelector("#scoreLabel")
 const livesLabel = document.querySelector("#livesLabel")
-const pacmanLabel = document.querySelector("#pacmanText")
+const pacmanLabel = document.querySelector("#pacmanText") // not used
 const restartButton = document.querySelector("#RestartButton")
 restartButton.addEventListener("click", closeGame);
 window.addEventListener("keydown", changeDirection)
@@ -14,12 +17,12 @@ window.addEventListener("keydown", function (e) {
 }, false);
 
 // Game Frame
-const gameWidth = gameFrame.height; // 630px
-const gameHeight = gameFrame.width; // 570px  //21x19
-const tileSize = 30; // 30x30 px
+export const gameWidth = gameFrame.height; // 630px
+export const gameHeight = gameFrame.width; // 570px  //21x19
+export const tileSize = 30; // 30x30 px
 const speed = 2.5;
-var TO_RADIANS = Math.PI / 180;
-let midPoint = tileSize / 2; //15 
+
+export let midPoint = tileSize / 2; //15 
 
 // Timer 
 let timerClock = document.querySelector("#timer");
@@ -29,45 +32,8 @@ timerClock.innerHTML = currentTime
 let changedTime = 0;
 
 // Player 
-class Player {
-    X = tileSize * 9 + midPoint
-    Y = tileSize * 15 + midPoint
-    collision = false;
-
-    direction = {
-        UP: false,
-        DOWN: false,
-        LEFT: false,
-        RIGHT: false,
-        STAY: true
-    }
-}
-
 let intervalID;
-let playerIntervalID;
-let intervalDirection;
 let timerIntervalID;
-
-// Monster
-class Monster {
-    X = tileSize * 9 + midPoint
-    Y = tileSize * 9 + midPoint
-    collision = false;
-
-    direction = {
-        UP: true,
-        DOWN: false,
-        LEFT: false,
-        RIGHT: false,
-        STAY: false
-    }
-}
-
-// Directions
-let up = false;
-let down = true;
-let right = false;
-let left = false;
 
 // Game State
 let running = false;
@@ -99,7 +65,7 @@ const map = [
 
 let gameOver = false;
 
-// All Images
+// All Images //
 const redMonster = document.createElement("img");
 redMonster.src = './img/monster/Monster_red2.png'
 
@@ -140,26 +106,22 @@ const Xright = document.createElement("img");
 Xright.src = './img/wall/Xright.png'
 
 // Special PNG
-const pacmanOpen = document.createElement("img");
-pacmanOpen.src = './img/player/ELDopen.png'
-const pacmanClose = document.createElement("img");
-pacmanClose.src = './img/player/ELDclose.png'
 const bait = document.createElement("img");
 bait.src = './img/wall/bait.png'
-
-// Pacman Image Change
-let mouthOpen = false;
-let changeImg = 1;
 
 // Game Variables
 let lives = 3;
 let dies = 0;
-let score = 9500;
+let score = 1000;
 let maxScore = 9648;
 
+let baseCoordinateX = tileSize * 9 + midPoint;
+let baseCoordinateY = tileSize * 15 + midPoint
+
 // First Run
-let player = new Player();
-let monster = new Monster();
+let player = new playerClass.Player(baseCoordinateX, baseCoordinateY);
+let monster = new monsterClass.Monster(tileSize * 9 + midPoint, tileSize * 9 + midPoint);
+monster.direction.UP = true;
 showMap();
 timerClock.innerHTML = "Press Enter to Start"
 
@@ -167,7 +129,7 @@ function showMap() {
     if (!running) {
         setTimeout(() => {
             createMap();
-            context.drawImage(pacmanOpen, player.X - midPoint, player.Y - midPoint)
+            context.drawImage(playerClass.pacmanOpen, player.X - midPoint, player.Y - midPoint)
             context.drawImage(redMonster, monster.X - midPoint, monster.Y - midPoint)
             showMap();
         }, 10);
@@ -218,8 +180,8 @@ function setEntityStay(entity) {
 }
 
 function setPlayerBaseCoordinates() {
-    player.X = tileSize * 9 + midPoint
-    player.Y = tileSize * 15 + midPoint
+    player.X = baseCoordinateX
+    player.Y = baseCoordinateY
 }
 
 function monsterCollision() {
@@ -257,16 +219,16 @@ function monsterDirection(monster) {
     if (monster.collision) {
         switch (rand) {
             case 1:
-                directions(monster, "up")
+                monsterClass.setDirection(monster, "up")
                 break;
             case 2:
-                directions(monster, "down")
+                monsterClass.setDirection(monster, "down")
                 break;
             case 3:
-                directions(monster, "left")
+                monsterClass.setDirection(monster, "left")
                 break;
             case 4:
-                directions(monster, "right")
+                monsterClass.setDirection(monster, "right")
                 break;
         }
     }
@@ -407,60 +369,6 @@ function createMap() {
     }
 }
 
-function predictDirection(tempDirection) {
-
-    intervalDirection = setTimeout(() => {
-
-        if (player.X % tileSize == midPoint && player.Y % tileSize == midPoint) {
-            directions(player, tempDirection)
-            clearTimeout();
-        }
-        else {
-            predictDirection(tempDirection);
-        }
-    }, 10);
-
-}
-
-function directions(entity, direction) {
-
-    if (direction == "up") {
-        entity.direction.UP = true;
-        entity.direction.DOWN = false;
-        entity.direction.RIGHT = false;
-        entity.direction.LEFT = false;
-        entity.direction.STAY = false;
-    }
-    else if (direction == "down") {
-        entity.direction.UP = false;
-        entity.direction.DOWN = true;
-        entity.direction.RIGHT = false;
-        entity.direction.LEFT = false;
-        entity.direction.STAY = false;
-    }
-    else if (direction == "right") {
-        entity.direction.UP = false;
-        entity.direction.DOWN = false;
-        entity.direction.RIGHT = true;
-        entity.direction.LEFT = false;
-        entity.direction.STAY = false;
-    }
-    else if (direction == "left") {
-        entity.direction.UP = false;
-        entity.direction.DOWN = false;
-        entity.direction.RIGHT = false;
-        entity.direction.LEFT = true;
-        entity.direction.STAY = false;
-    }
-    else if (direction == "space") {
-        entity.direction.UP = false;
-        entity.direction.DOWN = false;
-        entity.direction.RIGHT = false;
-        entity.direction.LEFT = false;
-        entity.direction.STAY = true;
-    }
-}
-
 function changeDirection(event) {
     const keyPressed = event.keyCode;
 
@@ -475,41 +383,41 @@ function changeDirection(event) {
         case upNum:
             // sağa veya sola giderken yukarı basılırsa:
             if ((player.direction.RIGHT && !player.collision) || (player.direction.LEFT && !player.collision)) {
-                predictDirection("up");
+                playerClass.predictDirection(player, "up");
             }
             else {
-                directions(player, "up");
+                playerClass.setDirection(player, "up");
             }
             break;
         case downNum:
             // sağa veya sola giderken aşağı basılırsa
             if ((player.direction.RIGHT && !player.collision) || (player.direction.LEFT && !player.collision)) {
-                predictDirection("down");
+                playerClass.predictDirection(player, "down");
             }
             else {
-                directions(player, "down");
+                playerClass.setDirection(player, "down");
             }
             break;
         case rightNum:
             // yukarı veya aşağı giderken sağa basılırsa
             if ((player.direction.UP && !player.collision) || (player.direction.DOWN && !player.collision)) {
-                predictDirection("right");
+                playerClass.predictDirection(player, "right");
             }
             else {
-                directions(player, "right");
+                playerClass.setDirection(player, "right");
             }
             break;
         case leftNum:
             // yukarı veya aşağı giderken sola basılırsa
             if ((player.direction.UP && !player.collision) || (player.direction.DOWN && !player.collision)) {
-                predictDirection("left");
+                playerClass.predictDirection(player, "left");
             }
             else {
-                directions(player, "left")
+                playerClass.setDirection(player, "left")
             }
             break;
         case space:
-            directions(player, "space");
+            playerClass.setDirection(player, "space");
             break;
         case enter:
             if (!running) {
@@ -517,21 +425,9 @@ function changeDirection(event) {
                 timerClock.innerHTML = startTime;
                 nextTick();
                 clock();
-                imageChanger();
+                playerClass.imageChanger();
             }
             break;
-    }
-}
-
-function teleportRight() {
-    if (player.X > gameHeight + midPoint) {
-        player.X = 0 - midPoint;
-    }
-}
-
-function teleportLeft() {
-    if (player.X + tileSize + midPoint < tileSize) {
-        player.X = 20 * tileSize
     }
 }
 
@@ -554,73 +450,13 @@ function movePlayer(entity) {
             if (entity.Y % tileSize == 15) {
                 entity.X = entity.X + speed;
             }
-            teleportRight();
+            playerClass.teleportRight(player);
         }
         else if (entity.direction.LEFT) {
             if (entity.Y % tileSize == 15) {
                 entity.X = entity.X - speed;
             }
-            teleportLeft();
-        }
-    }
-}
-
-function imageChanger() {
-
-    playerIntervalID = setTimeout(() => {
-        if (changeImg == 1) {
-            mouthOpen = true;
-            changeImg = 2;
-        } else if (changeImg == 2) {
-            mouthOpen = false;
-            changeImg = 1;
-        }
-        imageChanger();
-    }, 200);
-}
-
-function rotateAndPaintImage(image, angleInRad) {
-    context.translate(player.X, player.Y);
-    context.rotate(angleInRad * TO_RADIANS);
-    context.drawImage(image, -midPoint, -midPoint);
-    context.rotate(-angleInRad * TO_RADIANS);
-    context.translate(-player.X, -player.Y);
-}
-
-function drawPlayer() {
-
-    if (mouthOpen) {
-        if (player.direction.UP) {
-            rotateAndPaintImage(pacmanOpen, 270);
-        }
-        else if (player.direction.DOWN) {
-            rotateAndPaintImage(pacmanOpen, 90);
-        }
-        else if (player.direction.RIGHT) {
-            rotateAndPaintImage(pacmanOpen, 0);
-        }
-        else if (player.direction.LEFT) {
-            rotateAndPaintImage(pacmanOpen, 180);
-        }
-        else if (player.direction.STAY) {
-            rotateAndPaintImage(pacmanOpen, 0);
-        }
-    }
-    else {
-        if (player.direction.UP) {
-            rotateAndPaintImage(pacmanClose, 270);
-        }
-        else if (player.direction.DOWN) {
-            rotateAndPaintImage(pacmanClose, 90);
-        }
-        else if (player.direction.RIGHT) {
-            rotateAndPaintImage(pacmanClose, 0);
-        }
-        else if (player.direction.LEFT) {
-            rotateAndPaintImage(pacmanClose, 180);
-        }
-        else if (player.direction.STAY) {
-            rotateAndPaintImage(pacmanClose, 0);
+            playerClass.teleportLeft(player);
         }
     }
 }
@@ -636,7 +472,7 @@ function nextTick() {
         clearMap();
         createMap();
         movePlayer(player)
-        drawPlayer();
+        playerClass.drawPlayer(player);
         collectScore();
 
         monsterDirection(monster)
