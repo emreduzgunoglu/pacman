@@ -212,28 +212,6 @@ function drawMonster(monster) {
     context.drawImage(redMonster, monster.X - midPoint, monster.Y - midPoint)
 }
 
-function monsterDirection(monster) {
-
-    let rand = Math.floor(Math.random() * 4) + 1;
-
-    if (monster.collision) {
-        switch (rand) {
-            case 1:
-                monsterClass.setDirection(monster, "up")
-                break;
-            case 2:
-                monsterClass.setDirection(monster, "down")
-                break;
-            case 3:
-                monsterClass.setDirection(monster, "left")
-                break;
-            case 4:
-                monsterClass.setDirection(monster, "right")
-                break;
-        }
-    }
-}
-
 function displayGameOver() {
     running = false;
     clearTimeout(timerIntervalID);
@@ -369,6 +347,7 @@ function createMap() {
     }
 }
 
+// main
 function changeDirection(event) {
     const keyPressed = event.keyCode;
 
@@ -475,7 +454,7 @@ function nextTick() {
         playerClass.drawPlayer(player);
         collectScore();
 
-        monsterDirection(monster)
+        monsterClass.monsterDirection(monster)
         movePlayer(monster)
         drawMonster(monster);
 

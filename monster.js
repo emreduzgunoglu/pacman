@@ -57,3 +57,25 @@ export function setDirection(entity, direction) {
         entity.direction.STAY = true;
     }
 }
+
+export function monsterDirection(monster) {
+
+    let rand = Math.floor(Math.random() * 4) + 1;
+
+    if (monster.collision) {
+        switch (rand) {
+            case 1:
+                setDirection(monster, "up")
+                break;
+            case 2:
+                setDirection(monster, "down")
+                break;
+            case 3:
+                setDirection(monster, "left")
+                break;
+            case 4:
+                setDirection(monster, "right")
+                break;
+        }
+    }
+}
