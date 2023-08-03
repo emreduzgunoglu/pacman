@@ -143,30 +143,30 @@ displayGameStart();
 // let rand = Math.floor(Math.random() * 2) + 1;
 function getTargetDirections(entity) {
 
-    let stack = [];
+    let queue = [];
 
     if (entity.X > player.X) {
-        stack.push("left")
+        queue.push("left")
     }
     else if (entity.X < player.X) {
-        stack.push("right")
+        queue.push("right")
     }
 
     if (entity.Y > player.Y) {
-        stack.push("up")
+        queue.push("up")
     }
     else if (entity.Y < player.Y) {
-        stack.push("down")
+        queue.push("down")
     }
 
-    console.log(stack)
+    console.log(queue)
     
     if (entity.collision) {
-        stack.pop()
-        monsterClass.setDirection(entity, stack.pop());
+        queue.shift()
+        monsterClass.setDirection(entity, queue.shift());
     }
     else {
-        monsterClass.setDirection(entity, stack.pop());
+        monsterClass.setDirection(entity, queue.shift());
     }
 }
 

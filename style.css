@@ -13,6 +13,7 @@
 #gameFrame {
     border: 5px solid;
     background-color: black;
+    border-color: black;
 }
 
 #pacmanText {
