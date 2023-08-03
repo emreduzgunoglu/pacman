@@ -20,7 +20,7 @@ window.addEventListener("keydown", function (e) {
 export const gameWidth = gameFrame.height; // 630px
 export const gameHeight = gameFrame.width; // 570px  //21x19
 export const tileSize = 30; // 30x30 px
-const speed = 2.5;
+//const speed = 2.5;
 
 export let midPoint = tileSize / 2; //15 
 
@@ -121,9 +121,9 @@ let baseCoordinateX = tileSize * 9 + midPoint;
 let baseCoordinateY = tileSize * 15 + midPoint
 
 // First Run
-let player = new playerClass.Player(baseCoordinateX, baseCoordinateY);
-let monster = new monsterClass.Monster(tileSize * 12 + midPoint, tileSize * 7 + midPoint, "red");
-let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue");
+let player = new playerClass.Player(baseCoordinateX, baseCoordinateY, 3);
+let monster = new monsterClass.Monster(tileSize * 12 + midPoint, tileSize * 7 + midPoint, "red", 1.5);
+let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue", 2.5);
 monster.direction.UP = true;
 monster2.direction.UP = true;
 
@@ -139,6 +139,27 @@ let monster2LocationY;
 
 showMap();
 displayGameStart();
+
+function getTargetDirections(entity) {
+
+    let stack = [];
+
+    if (entity.X > player.X) {
+        stack.push("left")
+    }
+    else if (entity.X < player.X) {
+        stack.push("right")
+    }
+
+    if (entity.Y > player.Y) {
+        stack.push("up")
+    }
+    else if (entity.Y < player.Y) {
+        stack.push("down")
+    }
+
+    return stack;
+}
 
 function updateAllEntityLocations() {
     playerLocationX = Math.round((player.X - midPoint) / tileSize)
@@ -195,12 +216,12 @@ function teleportPlayerToBase() {
     player.Y = baseCoordinateY
 }
 
-function teleportMonstersToBase(){
+function teleportMonstersToBase() {
     monster.X = tileSize * 12 + midPoint
     monster.Y = tileSize * 7 + midPoint
 
     monster2.X = tileSize * 6 + midPoint
-    monster2.Y = tileSize * 7 + midPoint    
+    monster2.Y = tileSize * 7 + midPoint
 }
 
 function monsterToPlayerCollision() {
@@ -371,7 +392,7 @@ function createMap() {
     }
 }
 
-// Stays in main
+// Main
 function changeDirection(event) {
     const keyPressed = event.keyCode;
 
@@ -441,23 +462,23 @@ function movePlayer(entity) {
     if (!entity.collision) {
         if (entity.direction.UP) {
             if (entity.X % tileSize == 15) {
-                entity.Y = entity.Y - speed;
+                entity.Y = entity.Y - entity.speed;
             }
         }
         else if (entity.direction.DOWN) {
             if (entity.X % tileSize == 15) {
-                entity.Y = entity.Y + speed;
+                entity.Y = entity.Y + entity.speed;
             }
         }
         else if (entity.direction.RIGHT) {
             if (entity.Y % tileSize == 15) {
-                entity.X = entity.X + speed;
+                entity.X = entity.X + entity.speed;
             }
             playerClass.teleportRight(player);
         }
         else if (entity.direction.LEFT) {
             if (entity.Y % tileSize == 15) {
-                entity.X = entity.X - speed;
+                entity.X = entity.X - entity.speed;
             }
             playerClass.teleportLeft(player);
         }
@@ -469,6 +490,7 @@ function clearMap() {
     context.fillRect(0, 0, gameHeight, gameWidth);
 }
 
+// Main
 function nextTick() {
 
     intervalID = setTimeout(() => {
@@ -482,12 +504,13 @@ function nextTick() {
         collectScore();
 
         // Monster1
-        monsterClass.monsterDirection(monster)
+        //monsterClass.monsterDirection(monster)
         movePlayer(monster)
         drawMonster(monster);
 
         //Monster2
-        monsterClass.monsterDirection(monster2)
+        //monsterClass.monsterDirection(monster2)
+        getTargetDirections(monster2);
         movePlayer(monster2)
         drawMonster(monster2);
 

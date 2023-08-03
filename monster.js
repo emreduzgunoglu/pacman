@@ -1,14 +1,15 @@
 import * as main from "../index.js";
 
 export class Monster {
-    constructor(X, Y, color) {
+    constructor(X, Y, color, speed) {
         this.X = X;
         this.Y = Y;
-        this.color = color
+        this.color = color;
+        this.speed = speed;
     }
 
-    X = main.tileSize * 9 + main.midPoint
-    Y = main.tileSize * 15 + main.midPoint
+    X = main.tileSize * 9 + main.midPoint;
+    Y = main.tileSize * 15 + main.midPoint;
     collision = false;
 
     direction = {

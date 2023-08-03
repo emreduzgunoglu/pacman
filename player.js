@@ -1,9 +1,10 @@
 import * as main from "../index.js";
 
 export class Player {
-    constructor(X, Y, Speed) {
+    constructor(X, Y, speed) {
         this.X = X;
         this.Y = Y;
+        this.speed = speed;
     }
 
     X = main.tileSize * 9 + main.midPoint
