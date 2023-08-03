@@ -8,7 +8,7 @@ const scoreText = document.querySelector("#scoreLabel")
 const livesLabel = document.querySelector("#livesLabel")
 const pacmanLabel = document.querySelector("#pacmanText") // not used
 const restartButton = document.querySelector("#RestartButton")
-restartButton.addEventListener("click", closeGame);
+restartButton.addEventListener("click", restartGame);
 window.addEventListener("keydown", changeDirection)
 window.addEventListener("keydown", function (e) {
     if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
@@ -26,7 +26,7 @@ export let midPoint = tileSize / 2; //15
 
 // Timer 
 let timerClock = document.querySelector("#timer");
-let startTime = 60;
+let startTime = 120;
 let currentTime = startTime;
 timerClock.innerHTML = currentTime
 let changedTime = 0;
@@ -121,7 +121,7 @@ let baseCoordinateX = tileSize * 9 + midPoint;
 let baseCoordinateY = tileSize * 15 + midPoint
 
 // First Run
-let player = new playerClass.Player(baseCoordinateX, baseCoordinateY, 3);
+let player = new playerClass.Player(baseCoordinateX, baseCoordinateY, 2.5);
 let monster = new monsterClass.Monster(tileSize * 12 + midPoint, tileSize * 7 + midPoint, "red", 1.5);
 let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue", 2);
 monster.direction.UP = true;
@@ -140,7 +140,6 @@ let monster2LocationY;
 showMap();
 displayGameStart();
 
-// let rand = Math.floor(Math.random() * 2) + 1;
 function getTargetDirections(entity) {
 
     let queue = [];
@@ -251,6 +250,7 @@ function monsterToPlayerCollision() {
     }
     else {
         displayGameOver();
+        teleportMonstersToBase();
     }
 }
 
@@ -295,9 +295,20 @@ function collectScore() {
     }
 }
 
-function closeGame() {
+function restartGame() {
     running = false;
-    console.log(`Game Running: ${running}`)
+    lives = 3;
+    score = 10;
+    livesLabel.innerHTML = "Lives: ❤️❤️❤️"
+    
+    // Time Reset
+    startTime = 60;
+    currentTime = 60;
+    changedTime = 0;
+    timerClock.innerHTML = 60
+
+    teleportMonstersToBase();
+    teleportPlayerToBase();
 }
 
 function drawTile(tile, j, i) {
@@ -464,7 +475,7 @@ function changeDirection(event) {
     }
 }
 
-function movePlayer(entity) {
+function moveEntity(entity) {
 
     isCollied(entity);
 
@@ -508,19 +519,18 @@ function nextTick() {
         updateAllEntityLocations();
 
         // Player
-        movePlayer(player)
+        moveEntity(player)
         playerClass.drawPlayer(player);
         collectScore();
 
         // Monster1
-        //monsterClass.monsterDirection(monster)
-        movePlayer(monster)
+        monsterClass.monsterDirection(monster)
+        moveEntity(monster)
         drawMonster(monster);
 
         //Monster2
-        //monsterClass.monsterDirection(monster2)
-        getTargetDirections(monster2);
-        movePlayer(monster2)
+        monsterClass.monsterDirection(monster2)
+        moveEntity(monster2)
         drawMonster(monster2);
 
         monsterToPlayerCollision();
@@ -539,7 +549,7 @@ function clock() {
         }, 1000);
     }
     else {
-        gameOver = true;
+        lives = -1;
     }
 }
 
