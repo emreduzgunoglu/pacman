@@ -123,7 +123,7 @@ let baseCoordinateY = tileSize * 15 + midPoint
 // First Run
 let player = new playerClass.Player(baseCoordinateX, baseCoordinateY, 3);
 let monster = new monsterClass.Monster(tileSize * 12 + midPoint, tileSize * 7 + midPoint, "red", 1.5);
-let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue", 2.5);
+let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue", 2);
 monster.direction.UP = true;
 monster2.direction.UP = true;
 
@@ -140,6 +140,7 @@ let monster2LocationY;
 showMap();
 displayGameStart();
 
+// let rand = Math.floor(Math.random() * 2) + 1;
 function getTargetDirections(entity) {
 
     let stack = [];
@@ -158,7 +159,15 @@ function getTargetDirections(entity) {
         stack.push("down")
     }
 
-    return stack;
+    console.log(stack)
+    
+    if (entity.collision) {
+        stack.pop()
+        monsterClass.setDirection(entity, stack.pop());
+    }
+    else {
+        monsterClass.setDirection(entity, stack.pop());
+    }
 }
 
 function updateAllEntityLocations() {
