@@ -39,6 +39,14 @@ let timerIntervalID;
 // Game State
 let running = false;
 
+//                   YOU ARE HERE!
+let GameState = {
+   GameStart: 1,
+   GameOver: 2,
+   GameWin: 3,
+   GameRunning: 4
+}
+
 // MAP
 let map = [
    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
