@@ -1,9 +1,7 @@
 import * as main from "../index.js";
 
 export class Player {
-    constructor(X, Y, speed) {
-        this.X = X;
-        this.Y = Y;
+    constructor(speed) {
         this.speed = speed;
     }
 
@@ -153,3 +151,11 @@ export function setDirection(entity, direction) {
         entity.direction.STAY = true;
     }
 }
+
+export function teleportPlayerToBase(player) {
+    let baseCoordinateX = main.tileSize * 9 + main.midPoint;
+    let baseCoordinateY = main.tileSize * 15 + main.midPoint;
+
+    player.X = baseCoordinateX
+    player.Y = baseCoordinateY
+ }
