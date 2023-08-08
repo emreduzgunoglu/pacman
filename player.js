@@ -1,6 +1,6 @@
-import * as main from "../index.js";
+import * as main from "../index.js"; 
 
-export class Player {
+export default class Player {
     constructor(speed) {
         this.speed = speed;
     }
@@ -8,6 +8,11 @@ export class Player {
     X = main.tileSize * 9 + main.midPoint
     Y = main.tileSize * 15 + main.midPoint
     collision = false;
+
+    upCollision = false;
+    downCollision = false;
+    rightCollision = false;
+    leftCollision= false;
 
     direction = {
         UP: false,

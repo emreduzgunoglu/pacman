@@ -12,6 +12,11 @@ export class Monster {
     Y = main.tileSize * 15 + main.midPoint;
     collision = false;
 
+    upCollision = false;
+    downCollision = false;
+    rightCollision = false;
+    leftCollision = false;
+
     direction = {
         UP: false,
         DOWN: false,
@@ -60,24 +65,81 @@ export function setDirection(entity, direction) {
     }
 }
 
-export function monsterDirection(monster) {
+/* export function monsterDirection(monster) {
 
     let rand = Math.floor(Math.random() * 4) + 1;
 
-    if (monster.collision) {
-        switch (rand) {
-            case 1:
+    switch (rand) {
+        case 1:
+            if (!monster.upCollision) {
                 setDirection(monster, "up")
-                break;
-            case 2:
+            }
+            break;
+        case 2:
+            if (!monster.downCollision) {
                 setDirection(monster, "down")
-                break;
-            case 3:
+            }
+            break;
+        case 3:
+            if (!monster.leftCollision) {
                 setDirection(monster, "left")
-                break;
-            case 4:
+            }
+            break;
+        case 4:
+            if (!monster.rightCollision) {
                 setDirection(monster, "right")
-                break;
-        }
+            }
+            break;
     }
+} */
+
+export function monsterChaseDirection(monster, player) {
+
+    // AVAILABLE DIRECTIONS
+    const availableDirections = [];
+
+    if (!monster.upCollision) {
+        availableDirections.push("up");
+    }
+
+    if (monster.downCollision) {
+        availableDirections.push("down");
+    }
+
+    if (monster.leftCollision) {
+        availableDirections.push("left");
+    }
+
+    if (monster.rightCollision) {
+        availableDirections.push("right");
+    }
+
+    // TO TARGET DIRECTIONS
+    const targetDirections = [];
+
+    if(player.X > monster.X){
+        targetDirections.push("right")
+    }
+    else if(player.X < monster.X){
+        targetDirections.push("left")
+    }
+
+    if(player.Y > monster.Y){
+        targetDirections.push("down")
+    }
+    else if(player.Y < monster.Y){
+        targetDirections.push("up")
+    }
+
+    
+
+
+
+
+
+
+
+
+
+
 }

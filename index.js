@@ -1,4 +1,5 @@
 import * as playerClass from "../player.js";
+import Player from "./player.js";
 import * as monsterClass from "../monster.js";
 
 // Game Constants
@@ -39,12 +40,11 @@ let timerIntervalID;
 // Game State
 let running = false;
 
-//                   YOU ARE HERE!
-let GameState = {
-   GameStart: 1,
-   GameOver: 2,
-   GameWin: 3,
-   GameRunning: 4
+let gameState = {
+   Start: 0,
+   Over: 0,
+   Win: 0,
+   Running: 0
 }
 
 // MAP
@@ -150,7 +150,9 @@ let score = 1000;
 let maxScore = 9648;
 
 // First Run
-let player = new playerClass.Player(2.5);
+
+let player = new Player(2.5)
+//let player2 = new playerClass.Player(2.5);
 let monster = new monsterClass.Monster(tileSize * 12 + midPoint, tileSize * 7 + midPoint, "red", 1.5);
 let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue", 2);
 monster.direction.UP = true;
@@ -470,7 +472,6 @@ function changeDirection(event) {
       case enter:
          if (running == false) {
             running = true;
-            console.log(" running: " + running + "||| enter basıldı ")
             timerClock.innerHTML = startTime;
             setEntityStay(player);
             nextTick();
@@ -485,30 +486,29 @@ function moveEntity(entity) {
 
    isCollied(entity);
 
-   if (!entity.collision) {
-      if (entity.direction.UP) {
-         if (entity.X % tileSize == 15) {
-            entity.Y = entity.Y - entity.speed;
-         }
-      }
-      else if (entity.direction.DOWN) {
-         if (entity.X % tileSize == 15) {
-            entity.Y = entity.Y + entity.speed;
-         }
-      }
-      else if (entity.direction.RIGHT) {
-         if (entity.Y % tileSize == 15) {
-            entity.X = entity.X + entity.speed;
-         }
-         playerClass.teleportRight(player);
-      }
-      else if (entity.direction.LEFT) {
-         if (entity.Y % tileSize == 15) {
-            entity.X = entity.X - entity.speed;
-         }
-         playerClass.teleportLeft(player);
+   if (entity.direction.UP && !entity.upCollision) {
+      if (entity.X % tileSize == 15) {
+         entity.Y = entity.Y - entity.speed;
       }
    }
+   else if (entity.direction.DOWN && !entity.downCollision) {
+      if (entity.X % tileSize == 15) {
+         entity.Y = entity.Y + entity.speed;
+      }
+   }
+   else if (entity.direction.RIGHT && !entity.rightCollision) {
+      if (entity.Y % tileSize == 15) {
+         entity.X = entity.X + entity.speed;
+      }
+      playerClass.teleportRight(player);
+   }
+   else if (entity.direction.LEFT && !entity.leftCollision) {
+      if (entity.Y % tileSize == 15) {
+         entity.X = entity.X - entity.speed;
+      }
+      playerClass.teleportLeft(player);
+   }
+
 }
 
 function clearMap() {
@@ -525,6 +525,12 @@ function nextTick() {
       updateAllEntityLocations();
 
       // Player
+      /* console.log("DOWN C: " + player.downCollision)
+      console.log("UP C: " + player.upCollision)
+      console.log("LEFT C: " + player.leftCollision)
+      console.log("RIGHT C: " + player.rightCollision)
+
+      console.log("-------------------") */
       moveEntity(player)
       playerClass.drawPlayer(player);
       collectScore();
@@ -564,36 +570,31 @@ function isCollied(entity) {
    let x = (entity.X) / tileSize;
    let y = (entity.Y) / tileSize;
 
-   if (entity.direction.UP) {
-      if ((map[Math.floor(y - 0.55)][Math.floor(x)] == 0)) {
-         entity.collision = true;
-      }
-      else {
-         entity.collision = false;
-      }
+   if ((map[Math.floor(y - 0.55)][Math.floor(x)] == 0)) {
+      entity.upCollision = true;
    }
-   else if (entity.direction.DOWN) {
-      if (map[Math.floor(y + 0.5)][Math.floor(x)] == 0) {
-         entity.collision = true;
-      }
-      else {
-         entity.collision = false;
-      }
+   else {
+      entity.upCollision = false;
    }
-   else if (entity.direction.RIGHT) {
-      if (map[Math.floor(y)][Math.floor(x + 0.5)] == 0) {
-         entity.collision = true;
-      }
-      else {
-         entity.collision = false;
-      }
+
+   if (map[Math.floor(y + 0.5)][Math.floor(x)] == 0) {
+      entity.downCollision = true;
    }
-   else if (entity.direction.LEFT) {
-      if (map[Math.floor(y)][Math.floor(x - 0.55)] == 0) {
-         entity.collision = true;
-      }
-      else {
-         entity.collision = false;
-      }
+   else {
+      entity.downCollision = false;
+   }
+
+   if (map[Math.floor(y)][Math.floor(x + 0.5)] == 0) {
+      entity.rightCollision = true;
+   }
+   else {
+      entity.rightCollision = false;
+   }
+
+   if (map[Math.floor(y)][Math.floor(x - 0.55)] == 0) {
+      entity.leftCollision = true;
+   }
+   else {
+      entity.leftCollision = false;
    }
 }
