@@ -39,7 +39,7 @@ let timerIntervalID;
 let running = false;
 
 // MAP
-const map = [
+let map = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
     [0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0],
@@ -62,6 +62,33 @@ const map = [
     [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
+
+// MAP UNCHANGED
+let constMap = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0],
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0],
+    [0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 1, 0, 0, 2, 0, 0, 1, 0, 1, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0],
+    [0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0],
+    [0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0],
+    [0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+]
+
+let asdMap = [[1,1,1,1,1,1]]
 
 let gameOver = false;
 
@@ -140,7 +167,7 @@ let monster2LocationY;
 showMap();
 displayGameStart();
 
-function getTargetDirections(entity) {
+/* function getTargetDirections(entity) {
 
     let queue = [];
 
@@ -159,7 +186,7 @@ function getTargetDirections(entity) {
     }
 
     console.log(queue)
-    
+
     if (entity.collision) {
         queue.shift()
         monsterClass.setDirection(entity, queue.shift());
@@ -167,7 +194,7 @@ function getTargetDirections(entity) {
     else {
         monsterClass.setDirection(entity, queue.shift());
     }
-}
+} */
 
 function updateAllEntityLocations() {
     playerLocationX = Math.round((player.X - midPoint) / tileSize)
@@ -250,7 +277,6 @@ function monsterToPlayerCollision() {
     }
     else {
         displayGameOver();
-        teleportMonstersToBase();
     }
 }
 
@@ -267,12 +293,14 @@ function drawMonster(monster) {
 }
 
 function displayGameOver() {
+    
     running = false;
     clearTimeout(timerIntervalID);
     timerClock.innerHTML = " Game Over!"
 
     setEntityStay(player);
     teleportPlayerToBase();
+    teleportMonstersToBase();
 }
 
 function displayGameStart() {
@@ -296,16 +324,22 @@ function collectScore() {
 }
 
 function restartGame() {
-    running = false;
+    running = true;
     lives = 3;
-    score = 10;
+    dies = 0;
     livesLabel.innerHTML = "Lives: ❤️❤️❤️"
+    score = 1000;
+    scoreText.innerHTML = "Score: " + score;
     
     // Time Reset
     startTime = 60;
     currentTime = 60;
     changedTime = 0;
     timerClock.innerHTML = 60
+
+    map = constMap.map(function(arr){
+        return arr.slice();
+    });
 
     teleportMonstersToBase();
     teleportPlayerToBase();
@@ -403,10 +437,10 @@ function createMap() {
             else if (map[i][j] == 1) { // If Walk Way
                 drawTile(bait, j, i)
             }
-            else if (map[i][j] == 2) {
-                //drawTile(block, j, i)
-                context.fillStyle = "black"
-                context.fillRect(player.X - midPoint, player.Y - midPoint, tileSize, tileSize);
+            else if (map[i][j] == 2) { // if Pacman eats bait
+                //drawTile(black, j, i)
+                /* context.fillStyle = "red"
+                context.fillRect(player.X - midPoint, player.Y - midPoint, tileSize, tileSize); */
             }
         }
     }
@@ -590,5 +624,4 @@ function isCollied(entity) {
             entity.collision = false;
         }
     }
-
 }
