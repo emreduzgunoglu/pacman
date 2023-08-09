@@ -58,11 +58,14 @@ export function setDirection(entity, direction) {
    }
 }
 
-const availableDirections = [];
-const targetDirections = [];
+let availableDirections = [];
+let targetDirections = [];
 
 export function selectDirections(monster, player){
    
+   availableDirections = [];
+   targetDirections = [];
+
    // AVAILABLE DIRECTIONS
    if (!monster.upCollision) {
       availableDirections.push("up");
@@ -98,9 +101,9 @@ export function selectDirections(monster, player){
 
 export function monsterChaseDirection(monster, player) {
 
-   const filteredArray = availableDirections.filter(value => targetDirections.includes(value));
+   let filteredArray = availableDirections.filter(value => targetDirections.includes(value));
 
-   const arrayClone = filteredArray.map(function (arr) {
+   let arrayClone = filteredArray.map(function (arr) {
       return arr.slice();
    });
 
@@ -144,6 +147,8 @@ export function monsterChaseDirection(monster, player) {
                filteredArray.push("left")
             }
          }
+
+         setDirection(monster, filteredArray.pop())
       }
       else {
          switch (arrayClone.pop()) {
