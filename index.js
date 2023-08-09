@@ -536,14 +536,14 @@ function nextTick() {
       collectScore();
 
       // Monster1
-      monsterClass.monsterDirection(monster)
       moveEntity(monster)
       drawMonster(monster);
 
       //Monster2
-      monsterClass.monsterDirection(monster2)
       moveEntity(monster2)
       drawMonster(monster2);
+
+      monsterClass.monsterChaseDirection(monster, player);
 
       monsterToPlayerCollision();
       nextTick();
