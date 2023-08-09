@@ -516,6 +516,7 @@ function clearMap() {
    context.fillRect(0, 0, gameHeight, gameWidth);
 }
 
+monsterClass.selectDirections(monster, player);
 // Main
 function nextTick() {
 

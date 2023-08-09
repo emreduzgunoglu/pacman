@@ -58,11 +58,12 @@ export function setDirection(entity, direction) {
    }
 }
 
-export function monsterChaseDirection(monster, player) {
+const availableDirections = [];
+const targetDirections = [];
 
+export function selectDirections(monster, player){
+   
    // AVAILABLE DIRECTIONS
-   const availableDirections = [];
-
    if (!monster.upCollision) {
       availableDirections.push("up");
    }
@@ -80,8 +81,6 @@ export function monsterChaseDirection(monster, player) {
    }
 
    // TO TARGET DIRECTIONS
-   const targetDirections = [];
-
    if (player.X > monster.X) {
       targetDirections.push("right")
    }
@@ -95,6 +94,9 @@ export function monsterChaseDirection(monster, player) {
    else if (player.Y < monster.Y) {
       targetDirections.push("up")
    }
+}
+
+export function monsterChaseDirection(monster, player) {
 
    const filteredArray = availableDirections.filter(value => targetDirections.includes(value));
 
@@ -109,19 +111,37 @@ export function monsterChaseDirection(monster, player) {
          // availableDirections sağ veya sol varsa aşağı boşluk bulana kadar git
          if (targetDirections.includes("down")) {
             if (availableDirections.includes("right")) {
-               setDirection(monster, "right")
+               //setDirection(monster, "right")
+
+               filteredArray = [];
+               filteredArray.push("down")
+               filteredArray.push("right")
             }
             else if (availableDirections.includes("left")) {
-               setDirection(monster, "left")
+               //setDirection(monster, "left")
+
+               filteredArray = [];
+               filteredArray.push("down")
+               filteredArray.push("left")
             }
          }
 
          if(targetDirections.includes("up")){
             if (availableDirections.includes("right")) {
-               setDirection(monster, "right")
+               //setDirection(monster, "right")
+               // sağ ve yukarı ekle
+
+               filteredArray = [];
+               filteredArray.push("up")
+               filteredArray.push("right")
             }
             else if (availableDirections.includes("left")) {
-               setDirection(monster, "left")
+               //setDirection(monster, "left")
+               // sol ve yukarı ekle
+
+               filteredArray = [];
+               filteredArray.push("up")
+               filteredArray.push("left")
             }
          }
       }
@@ -140,6 +160,7 @@ export function monsterChaseDirection(monster, player) {
                setDirection(monster, filteredArray.pop())
                break;
          }
+         selectDirections(monster, player);
       }
    }
    //console.log("up: " + monster.upCollision + "| down: " + monster.downCollision + "| right: " + monster.rightCollision + "| left : " + monster.leftCollision)
