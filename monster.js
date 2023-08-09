@@ -58,34 +58,6 @@ export function setDirection(entity, direction) {
    }
 }
 
-/* export function monsterDirection(monster) {
-
-    let rand = Math.floor(Math.random() * 4) + 1;
-
-    switch (rand) {
-        case 1:
-            if (!monster.upCollision) {
-                setDirection(monster, "up")
-            }
-            break;
-        case 2:
-            if (!monster.downCollision) {
-                setDirection(monster, "down")
-            }
-            break;
-        case 3:
-            if (!monster.leftCollision) {
-                setDirection(monster, "left")
-            }
-            break;
-        case 4:
-            if (!monster.rightCollision) {
-                setDirection(monster, "right")
-            }
-            break;
-    }
-} */
-
 export function monsterChaseDirection(monster, player) {
 
    // AVAILABLE DIRECTIONS
@@ -131,7 +103,7 @@ export function monsterChaseDirection(monster, player) {
    });
 
    if (arrayClone.length == 0) {
-      // EKLE // YOU ARE HERE!
+      //setDirection(monster, availableDirections.pop())
    }
    else {
       if ((monster.X % main.tileSize == main.midPoint) && (monster.Y % main.tileSize == main.midPoint)) {

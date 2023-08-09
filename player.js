@@ -1,4 +1,4 @@
-import * as main from "../index.js"; 
+import * as main from "../index.js";
 
 export default class Player {
     constructor(speed) {
@@ -12,7 +12,7 @@ export default class Player {
     upCollision = false;
     downCollision = false;
     rightCollision = false;
-    leftCollision= false;
+    leftCollision = false;
 
     direction = {
         UP: false,
@@ -163,4 +163,4 @@ export function teleportPlayerToBase(player) {
 
     player.X = baseCoordinateX
     player.Y = baseCoordinateY
- }
+}
