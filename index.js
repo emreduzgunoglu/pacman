@@ -536,6 +536,7 @@ function nextTick() {
       collectScore();
 
       // Monster1
+      monsterClass.monsterChaseDirection(monster, player);
       moveEntity(monster)
       drawMonster(monster);
 
@@ -543,7 +544,7 @@ function nextTick() {
       moveEntity(monster2)
       drawMonster(monster2);
 
-      monsterClass.monsterChaseDirection(monster, player);
+      
 
       monsterToPlayerCollision();
       nextTick();

@@ -102,11 +102,30 @@ export function monsterChaseDirection(monster, player) {
       return arr.slice();
    });
 
-   if (arrayClone.length == 0) {
-      //setDirection(monster, availableDirections.pop())
-   }
-   else {
-      if ((monster.X % main.tileSize == main.midPoint) && (monster.Y % main.tileSize == main.midPoint)) {
+   // Ortak Yön Yoksa
+   if ((monster.X % main.tileSize == main.midPoint) && (monster.Y % main.tileSize == main.midPoint)) {
+      if (arrayClone.length == 0) {
+         
+         // availableDirections sağ veya sol varsa aşağı boşluk bulana kadar git
+         if (targetDirections.includes("down")) {
+            if (availableDirections.includes("right")) {
+               setDirection(monster, "right")
+            }
+            else if (availableDirections.includes("left")) {
+               setDirection(monster, "left")
+            }
+         }
+
+         if(targetDirections.includes("up")){
+            if (availableDirections.includes("right")) {
+               setDirection(monster, "right")
+            }
+            else if (availableDirections.includes("left")) {
+               setDirection(monster, "left")
+            }
+         }
+      }
+      else {
          switch (arrayClone.pop()) {
             case "up":
                setDirection(monster, filteredArray.pop())
