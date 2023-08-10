@@ -184,7 +184,7 @@ export function monsterChaseDirection(monster, player) {
          }
 
          // yukarı gitmem lazım ama duvara çarptıysam
-         if (targetDirections.includes("up")) {
+         else if (targetDirections.includes("up")) {
 
             if (availableDirections.includes("right")) {
                setDirection(monster, "right")
@@ -205,7 +205,7 @@ export function monsterChaseDirection(monster, player) {
          }
 
          // sağa gitmem lazım ama duvara çarptıysam
-         if (targetDirections.includes("right")) {
+         else if (targetDirections.includes("right")) {
 
             if (availableDirections.includes("up")) {
                setDirection(monster, "up")
@@ -226,7 +226,7 @@ export function monsterChaseDirection(monster, player) {
          }
 
          // sola gitmem lazım ama duvara çarptıysam
-         if (targetDirections.includes("left")) {
+         else if (targetDirections.includes("left")) {
 
             if (availableDirections.includes("up")) {
                setDirection(monster, "up")
@@ -245,13 +245,8 @@ export function monsterChaseDirection(monster, player) {
                }
             }
          }
-
-
-
       }
-
    }
-
 }
 
 
