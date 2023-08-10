@@ -137,26 +137,29 @@ export function monsterChaseDirection(monster, player) {
 
    if (trueSpot(monster)) {
 
-      // Ortak gidilecek yön varsa => git!
-      if (commonDirections.includes("up")) {
-         setDirection(monster, "up")
+      if (commonDirections.length > 0) {
          selectDirections(monster, player);
+         // Ortak gidilecek yön varsa => git!
+         if (commonDirections.includes("up")) {
+            setDirection(monster, "up")
+
+         }
+         else if (commonDirections.includes("down")) {
+            setDirection(monster, "down")
+
+         }
+         else if (commonDirections.includes("right")) {
+            setDirection(monster, "right")
+
+         }
+         else if (commonDirections.includes("left")) {
+            setDirection(monster, "left")
+
+         }
       }
-      else if (commonDirections.includes("down")) {
-         setDirection(monster, "down")
-         selectDirections(monster, player);
-      }
-      else if (commonDirections.includes("right")) {
-         setDirection(monster, "right")
-         selectDirections(monster, player);
-      }
-      else if (commonDirections.includes("left")) {
-         setDirection(monster, "left")
-         selectDirections(monster, player);
-      }
+      console.log(commonDirections)
 
       // Ortak gidilecek yön yoksa => | Yolda duvar varsa |
-
       if (commonDirections.length == 0) {
 
          // aşağı gitmem lazım ama duvara çarptıysam
