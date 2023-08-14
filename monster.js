@@ -223,6 +223,22 @@ export function monsterChaseDirection(monster, player) {
                   selectDirections(monster, player);
                }
             }
+            else if (availableDirections.includes("left")) {
+               setDirection(monster, "left")
+               callAvailableDirections(monster);
+               if (availableDirections.includes("up")) {
+                  setDirection(monster, "up")
+                  if (monster.upCollision) {
+                     selectDirections(monster, player);
+                  }
+               }
+               else if (availableDirections.includes("down")) {
+                  setDirection(monster, "down")
+                  if (monster.downCollision) {
+                     selectDirections(monster, player);
+                  }
+               }
+            }
          }
 
          // sola gitmem lazım ama duvara çarptıysam
@@ -242,6 +258,22 @@ export function monsterChaseDirection(monster, player) {
                if (availableDirections.includes("left")) {
                   setDirection(monster, "left")
                   selectDirections(monster, player);
+               }
+            }
+            else if (availableDirections.includes("right")) {
+               setDirection(monster, "right")
+               callAvailableDirections(monster);
+               if (availableDirections.includes("up")) {
+                  setDirection(monster, "up")
+                  if (monster.upCollision) {
+                     selectDirections(monster, player);
+                  }
+               }
+               else if (availableDirections.includes("down")) {
+                  setDirection(monster, "down")
+                  if (monster.downCollision) {
+                     selectDirections(monster, player);
+                  }
                }
             }
          }
