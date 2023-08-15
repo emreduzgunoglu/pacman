@@ -33,24 +33,24 @@ export class Monster {
 
       this.availableDirections = [];
       this.targetDirections = [];
-   
+
       // AVAILABLE DIRECTIONS
       if (!this.upCollision) {
          this.availableDirections.push("up");
       }
-   
+
       if (!this.downCollision) {
          this.availableDirections.push("down");
       }
-   
+
       if (!this.leftCollision) {
          this.availableDirections.push("left");
       }
-   
+
       if (!this.rightCollision) {
          this.availableDirections.push("right");
       }
-   
+
       // TO TARGET DIRECTIONS
       if (player.X > this.X) {
          this.targetDirections.push("right")
@@ -58,14 +58,14 @@ export class Monster {
       else if (player.X < this.X) {
          this.targetDirections.push("left")
       }
-   
+
       if (player.Y > this.Y) {
          this.targetDirections.push("down")
       }
       else if (player.Y < this.Y) {
          this.targetDirections.push("up")
       }
-   
+
       this.commonDirections = this.availableDirections.filter(value => this.targetDirections.includes(value));
    }
 
@@ -104,20 +104,20 @@ export class Monster {
    callAvailableDirections() {
 
       this.availableDirections = [];
-   
+
       // AVAILABLE DIRECTIONS
       if (!this.upCollision) {
          this.availableDirections.push("up");
       }
-   
+
       if (!this.downCollision) {
          this.availableDirections.push("down");
       }
-   
+
       if (!this.leftCollision) {
          this.availableDirections.push("left");
       }
-   
+
       if (!this.rightCollision) {
          this.availableDirections.push("right");
       }
@@ -135,7 +135,7 @@ export class Monster {
    monsterChaseDirection(player) {
 
       if (this.trueSpot()) {
-   
+
          if (this.commonDirections.length > 0) {
             this.selectDirections(player);
             // Ortak gidilecek yön varsa => git!
@@ -152,10 +152,10 @@ export class Monster {
                this.setDirection("left")
             }
          }
-   
+
          // Ortak gidilecek yön yoksa => | Yolda duvar varsa |
          if (this.commonDirections.length == 0) {
-   
+
             // aşağı gitmem lazım ama duvara çarptıysam
             if (this.targetDirections.includes("down")) {
                if (this.availableDirections.includes("right")) {
@@ -179,10 +179,10 @@ export class Monster {
                   }
                }
             }
-   
+
             // yukarı gitmem lazım ama duvara çarptıysam
             else if (this.targetDirections.includes("up")) {
-   
+
                if (this.availableDirections.includes("right")) {
                   this.setDirection("right")
                   this.callAvailableDirections();
@@ -200,10 +200,10 @@ export class Monster {
                   }
                }
             }
-   
+
             // sağa gitmem lazım ama duvara çarptıysam
             else if (this.targetDirections.includes("right")) {
-   
+
                if (this.availableDirections.includes("up")) {
                   this.setDirection("up")
                   this.callAvailableDirections();
@@ -237,10 +237,10 @@ export class Monster {
                   }
                }
             }
-   
+
             // sola gitmem lazım ama duvara çarptıysam
             else if (this.targetDirections.includes("left")) {
-   
+
                if (this.availableDirections.includes("up")) {
                   this.setDirection("up")
                   this.callAvailableDirections();
