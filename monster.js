@@ -26,6 +26,10 @@ export class Monster {
    }
 }
 
+let availableDirections = [];
+let targetDirections = [];
+let commonDirections = [];
+
 export function setDirection(entity, direction) {
 
    if (direction == "up") {
@@ -57,10 +61,6 @@ export function setDirection(entity, direction) {
       entity.direction.STAY = false;
    }
 }
-
-let availableDirections = [];
-let targetDirections = [];
-let commonDirections = [];
 
 function callAvailableDirections(monster) {
 
@@ -142,43 +142,41 @@ export function monsterChaseDirection(monster, player) {
          // Ortak gidilecek yön varsa => git!
          if (commonDirections.includes("up")) {
             setDirection(monster, "up")
-
          }
          else if (commonDirections.includes("down")) {
             setDirection(monster, "down")
-
          }
          else if (commonDirections.includes("right")) {
             setDirection(monster, "right")
-
          }
          else if (commonDirections.includes("left")) {
             setDirection(monster, "left")
-
          }
       }
-      console.log(commonDirections)
 
       // Ortak gidilecek yön yoksa => | Yolda duvar varsa |
       if (commonDirections.length == 0) {
 
          // aşağı gitmem lazım ama duvara çarptıysam
          if (targetDirections.includes("down")) {
-
             if (availableDirections.includes("right")) {
                setDirection(monster, "right")
-               callAvailableDirections(monster);
-               if (availableDirections.includes("down")) {
-                  setDirection(monster, "down")
-                  selectDirections(monster, player);
+               if (monster.rightCollision) {
+                  callAvailableDirections(monster);
+                  if (availableDirections.includes("down")) {
+                     setDirection(monster, "down")
+                     selectDirections(monster, player);
+                  }
                }
             }
             else if (availableDirections.includes("left")) {
                setDirection(monster, "left")
-               callAvailableDirections(monster);
-               if (availableDirections.includes("down")) {
-                  setDirection(monster, "down")
-                  selectDirections(monster, player);
+               if (monster.leftCollision) {
+                  callAvailableDirections(monster);
+                  if (availableDirections.includes("down")) {
+                     setDirection(monster, "down")
+                     selectDirections(monster, player);
+                  }
                }
             }
          }
@@ -279,77 +277,4 @@ export function monsterChaseDirection(monster, player) {
          }
       }
    }
-}
-
-
-export function monsterChaseDirection2(monster, player) {
-
-   let filteredArray = availableDirections.filter(value => targetDirections.includes(value));
-
-   let arrayClone = filteredArray.map(function (arr) {
-      return arr.slice();
-   });
-
-   // Ortak Yön Yoksa
-   if ((monster.X % main.tileSize == main.midPoint) && (monster.Y % main.tileSize == main.midPoint)) {
-      if (arrayClone.length == 0) {
-
-         // availableDirections sağ veya sol varsa aşağı boşluk bulana kadar git
-         if (targetDirections.includes("down")) {
-            if (availableDirections.includes("right")) {
-               //setDirection(monster, "right")
-
-               filteredArray = [];
-               filteredArray.push("down")
-               filteredArray.push("right")
-            }
-            else if (availableDirections.includes("left")) {
-               //setDirection(monster, "left")
-
-               filteredArray = [];
-               filteredArray.push("down")
-               filteredArray.push("left")
-            }
-         }
-
-         if (targetDirections.includes("up")) {
-            if (availableDirections.includes("right")) {
-               //setDirection(monster, "right")
-               // sağ ve yukarı ekle
-
-               filteredArray = [];
-               filteredArray.push("up")
-               filteredArray.push("right")
-            }
-            else if (availableDirections.includes("left")) {
-               //setDirection(monster, "left")
-               // sol ve yukarı ekle
-
-               filteredArray = [];
-               filteredArray.push("up")
-               filteredArray.push("left")
-            }
-         }
-
-         setDirection(monster, filteredArray.pop())
-      }
-      else {
-         switch (arrayClone.pop()) {
-            case "up":
-               setDirection(monster, filteredArray.pop())
-               break;
-            case "down":
-               setDirection(monster, filteredArray.pop())
-               break;
-            case "left":
-               setDirection(monster, filteredArray.pop())
-               break;
-            case "right":
-               setDirection(monster, filteredArray.pop())
-               break;
-         }
-         selectDirections(monster, player);
-      }
-   }
-   //console.log("up: " + monster.upCollision + "| down: " + monster.downCollision + "| right: " + monster.rightCollision + "| left : " + monster.leftCollision)
 }

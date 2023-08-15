@@ -151,10 +151,10 @@ let maxScore = 9648;
 
 // First Run
 
-let player = new Player(2.5)
+let player = new Player(2)
 //let player2 = new playerClass.Player(2.5);
 let monster = new monsterClass.Monster(tileSize * 12 + midPoint, tileSize * 7 + midPoint, "red", 1.5);
-let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue", 2);
+let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue", 1);
 monster.direction.UP = true;
 monster2.direction.UP = true;
 

@@ -109,7 +109,28 @@ export function teleportLeft(player) {
 export function predictDirection(player, tempDirection) {
     intervalDirection = setTimeout(() => {
         if ((player.X % main.tileSize == main.midPoint) && (player.Y % main.tileSize == main.midPoint)) {
-            setDirection(player, tempDirection)
+            switch (tempDirection) {
+                case "up":
+                    if (!player.upCollision) {
+                        setDirection(player, tempDirection)
+                    }
+                    break;
+                case "down":
+                    if (!player.downCollision) {
+                        setDirection(player, tempDirection)
+                    }
+                    break;
+                case "left":
+                    if (!player.leftCollision) {
+                        setDirection(player, tempDirection)
+                    }
+                    break;
+                case "right":
+                    if (!player.rightCollision) {
+                        setDirection(player, tempDirection)
+                    }
+                    break;
+            }
             clearTimeout();
         }
         else {
