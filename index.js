@@ -154,8 +154,8 @@ let maxScore = 9648;
 
 let player = new Player(2)
 //let player2 = new playerClass.Player(2.5);
-let monster = new monsterClass.Monster(tileSize * 12 + midPoint, tileSize * 7 + midPoint, "red", 1.5);
-let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue", 1.5);
+let monster = new Monster(tileSize * 12 + midPoint, tileSize * 7 + midPoint, "red", 1.5);
+let monster2 = new Monster(tileSize * 14 + midPoint, tileSize * 5 + midPoint, "blue", 1.5);
 monster.direction.UP = true;
 monster2.direction.UP = true;
 
@@ -517,13 +517,20 @@ function clearMap() {
    context.fillRect(0, 0, gameHeight, gameWidth);
 }
 
-let chaseDot = {
-   X: 525,
-   Y: 45
+let chaseBlueDotTop = {
+   X: 17 * tileSize + midPoint,
+   Y: 1 * tileSize + midPoint
+}
+
+let chaseBlueDotBottom = {
+   X: 14 * tileSize + midPoint,
+   Y: 5 * tileSize + midPoint
 }
 
 monster.selectDirections(player)
 monster2.selectDirections(player)
+
+let i = 2;
 
 // Main
 function nextTick() {
@@ -543,7 +550,22 @@ function nextTick() {
       drawMonster(monster);
 
       //Monster2
-      monster2.monsterChaseDirection(chaseDot);
+
+      if(monster2.X == (17 * tileSize + midPoint) && monster2.Y ==  (1 * tileSize + midPoint)){
+         i = 2;
+      }
+      else if(monster2.X == (14 * tileSize + midPoint) && monster2.Y ==  (5 * tileSize + midPoint)){
+         i = 1;
+      }
+
+      if(i == 1){
+         monster2.monsterChaseDirection(chaseBlueDotTop);
+      }
+      else if(i == 2){
+         monster2.monsterChaseDirection(chaseBlueDotBottom); 
+      }
+
+      
       moveEntity(monster2)
       drawMonster(monster2);
 
