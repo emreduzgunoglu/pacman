@@ -154,7 +154,7 @@ let maxScore = 9648;
 let player = new Player(2)
 //let player2 = new playerClass.Player(2.5);
 let monster = new monsterClass.Monster(tileSize * 12 + midPoint, tileSize * 7 + midPoint, "red", 1.5);
-let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue", 1);
+let monster2 = new monsterClass.Monster(tileSize * 6 + midPoint, tileSize * 7 + midPoint, "blue", 1.5);
 monster.direction.UP = true;
 monster2.direction.UP = true;
 
@@ -516,6 +516,11 @@ function clearMap() {
    context.fillRect(0, 0, gameHeight, gameWidth);
 }
 
+let chaseDot = {
+   X: 525,
+   Y: 45
+}
+
 monsterClass.selectDirections(monster, player);
 // Main
 function nextTick() {
@@ -525,13 +530,6 @@ function nextTick() {
       createMap();
       updateAllEntityLocations();
 
-      // Player
-      /* console.log("DOWN C: " + player.downCollision)
-      console.log("UP C: " + player.upCollision)
-      console.log("LEFT C: " + player.leftCollision)
-      console.log("RIGHT C: " + player.rightCollision)
-
-      console.log("-------------------") */
       moveEntity(player)
       playerClass.drawPlayer(player);
       collectScore();
@@ -542,10 +540,9 @@ function nextTick() {
       drawMonster(monster);
 
       //Monster2
+      //monsterClass.monsterChaseDirection(monster2, chaseDot);
       moveEntity(monster2)
       drawMonster(monster2);
-
-      
 
       monsterToPlayerCollision();
       nextTick();
