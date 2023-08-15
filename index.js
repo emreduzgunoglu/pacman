@@ -1,5 +1,6 @@
 import * as playerClass from "../player.js";
 import Player from "./player.js";
+import { Monster } from "./monster.js";
 import * as monsterClass from "../monster.js";
 
 // Game Constants
@@ -521,7 +522,9 @@ let chaseDot = {
    Y: 45
 }
 
-monsterClass.selectDirections(monster, player);
+monster.selectDirections(player)
+monster2.selectDirections(player)
+
 // Main
 function nextTick() {
 
@@ -535,12 +538,12 @@ function nextTick() {
       collectScore();
 
       // Monster1
-      monsterClass.monsterChaseDirection(monster, player);
+      monster.monsterChaseDirection(player);
       moveEntity(monster)
       drawMonster(monster);
 
       //Monster2
-      //monsterClass.monsterChaseDirection(monster2, chaseDot);
+      monster2.monsterChaseDirection(chaseDot);
       moveEntity(monster2)
       drawMonster(monster2);
 

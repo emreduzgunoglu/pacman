@@ -24,257 +24,258 @@ export class Monster {
       RIGHT: false,
       STAY: true
    }
-}
-
-let availableDirections = [];
-let targetDirections = [];
-let commonDirections = [];
-
-export function setDirection(entity, direction) {
-
-   if (direction == "up") {
-      entity.direction.UP = true;
-      entity.direction.DOWN = false;
-      entity.direction.RIGHT = false;
-      entity.direction.LEFT = false;
-      entity.direction.STAY = false;
-   }
-   else if (direction == "down") {
-      entity.direction.UP = false;
-      entity.direction.DOWN = true;
-      entity.direction.RIGHT = false;
-      entity.direction.LEFT = false;
-      entity.direction.STAY = false;
-   }
-   else if (direction == "right") {
-      entity.direction.UP = false;
-      entity.direction.DOWN = false;
-      entity.direction.RIGHT = true;
-      entity.direction.LEFT = false;
-      entity.direction.STAY = false;
-   }
-   else if (direction == "left") {
-      entity.direction.UP = false;
-      entity.direction.DOWN = false;
-      entity.direction.RIGHT = false;
-      entity.direction.LEFT = true;
-      entity.direction.STAY = false;
-   }
-}
-
-function callAvailableDirections(monster) {
-
-   availableDirections = [];
-
-   // AVAILABLE DIRECTIONS
-   if (!monster.upCollision) {
-      availableDirections.push("up");
-   }
-
-   if (!monster.downCollision) {
-      availableDirections.push("down");
-   }
-
-   if (!monster.leftCollision) {
-      availableDirections.push("left");
-   }
-
-   if (!monster.rightCollision) {
-      availableDirections.push("right");
-   }
-}
-
-export function selectDirections(monster, player) {
 
    availableDirections = [];
    targetDirections = [];
+   commonDirections = [];
 
-   // AVAILABLE DIRECTIONS
-   if (!monster.upCollision) {
-      availableDirections.push("up");
-   }
+   selectDirections(player) {
 
-   if (!monster.downCollision) {
-      availableDirections.push("down");
-   }
-
-   if (!monster.leftCollision) {
-      availableDirections.push("left");
-   }
-
-   if (!monster.rightCollision) {
-      availableDirections.push("right");
-   }
-
-   // TO TARGET DIRECTIONS
-   if (player.X > monster.X) {
-      targetDirections.push("right")
-   }
-   else if (player.X < monster.X) {
-      targetDirections.push("left")
-   }
-
-   if (player.Y > monster.Y) {
-      targetDirections.push("down")
-   }
-   else if (player.Y < monster.Y) {
-      targetDirections.push("up")
-   }
-
-   commonDirections = availableDirections.filter(value => targetDirections.includes(value));
-}
-
-function trueSpot(monster) {
-
-   if ((monster.X % main.tileSize == main.midPoint) && (monster.Y % main.tileSize == main.midPoint)) {
-      return true;
-   }
-   else
-      return false;
-}
-
-export function monsterChaseDirection(monster, player) {
-
-   if (trueSpot(monster)) {
-
-      if (commonDirections.length > 0) {
-         selectDirections(monster, player);
-         // Ortak gidilecek yön varsa => git!
-         if (commonDirections.includes("up")) {
-            setDirection(monster, "up")
-         }
-         else if (commonDirections.includes("down")) {
-            setDirection(monster, "down")
-         }
-         else if (commonDirections.includes("right")) {
-            setDirection(monster, "right")
-         }
-         else if (commonDirections.includes("left")) {
-            setDirection(monster, "left")
-         }
+      this.availableDirections = [];
+      this.targetDirections = [];
+   
+      // AVAILABLE DIRECTIONS
+      if (!this.upCollision) {
+         this.availableDirections.push("up");
       }
+   
+      if (!this.downCollision) {
+         this.availableDirections.push("down");
+      }
+   
+      if (!this.leftCollision) {
+         this.availableDirections.push("left");
+      }
+   
+      if (!this.rightCollision) {
+         this.availableDirections.push("right");
+      }
+   
+      // TO TARGET DIRECTIONS
+      if (player.X > this.X) {
+         this.targetDirections.push("right")
+      }
+      else if (player.X < this.X) {
+         this.targetDirections.push("left")
+      }
+   
+      if (player.Y > this.Y) {
+         this.targetDirections.push("down")
+      }
+      else if (player.Y < this.Y) {
+         this.targetDirections.push("up")
+      }
+   
+      this.commonDirections = this.availableDirections.filter(value => this.targetDirections.includes(value));
+   }
 
-      // Ortak gidilecek yön yoksa => | Yolda duvar varsa |
-      if (commonDirections.length == 0) {
+   setDirection(direction) {
 
-         // aşağı gitmem lazım ama duvara çarptıysam
-         if (targetDirections.includes("down")) {
-            if (availableDirections.includes("right")) {
-               setDirection(monster, "right")
-               if (monster.rightCollision) {
-                  callAvailableDirections(monster);
-                  if (availableDirections.includes("down")) {
-                     setDirection(monster, "down")
-                     selectDirections(monster, player);
-                  }
-               }
-            }
-            else if (availableDirections.includes("left")) {
-               setDirection(monster, "left")
-               if (monster.leftCollision) {
-                  callAvailableDirections(monster);
-                  if (availableDirections.includes("down")) {
-                     setDirection(monster, "down")
-                     selectDirections(monster, player);
-                  }
-               }
-            }
-         }
-
-         // yukarı gitmem lazım ama duvara çarptıysam
-         else if (targetDirections.includes("up")) {
-
-            if (availableDirections.includes("right")) {
-               setDirection(monster, "right")
-               callAvailableDirections(monster);
-               if (availableDirections.includes("up")) {
-                  setDirection(monster, "up")
-                  selectDirections(monster, player);
-               }
-            }
-            else if (availableDirections.includes("left")) {
-               setDirection(monster, "left")
-               callAvailableDirections(monster);
-               if (availableDirections.includes("up")) {
-                  setDirection(monster, "up")
-                  selectDirections(monster, player);
-               }
-            }
-         }
-
-         // sağa gitmem lazım ama duvara çarptıysam
-         else if (targetDirections.includes("right")) {
-
-            if (availableDirections.includes("up")) {
-               setDirection(monster, "up")
-               callAvailableDirections(monster);
-               if (availableDirections.includes("right")) {
-                  setDirection(monster, "right")
-                  selectDirections(monster, player);
-               }
-            }
-            else if (availableDirections.includes("down")) {
-               setDirection(monster, "down")
-               callAvailableDirections(monster);
-               if (availableDirections.includes("right")) {
-                  setDirection(monster, "right")
-                  selectDirections(monster, player);
-               }
-            }
-            else if (availableDirections.includes("left")) {
-               setDirection(monster, "left")
-               callAvailableDirections(monster);
-               if (availableDirections.includes("up")) {
-                  setDirection(monster, "up")
-                  if (monster.upCollision) {
-                     selectDirections(monster, player);
-                  }
-               }
-               else if (availableDirections.includes("down")) {
-                  setDirection(monster, "down")
-                  if (monster.downCollision) {
-                     selectDirections(monster, player);
-                  }
-               }
-            }
-         }
-
-         // sola gitmem lazım ama duvara çarptıysam
-         else if (targetDirections.includes("left")) {
-
-            if (availableDirections.includes("up")) {
-               setDirection(monster, "up")
-               callAvailableDirections(monster);
-               if (availableDirections.includes("left")) {
-                  setDirection(monster, "left")
-                  selectDirections(monster, player);
-               }
-            }
-            else if (availableDirections.includes("down")) {
-               setDirection(monster, "down")
-               callAvailableDirections(monster);
-               if (availableDirections.includes("left")) {
-                  setDirection(monster, "left")
-                  selectDirections(monster, player);
-               }
-            }
-            else if (availableDirections.includes("right")) {
-               setDirection(monster, "right")
-               callAvailableDirections(monster);
-               if (availableDirections.includes("up")) {
-                  setDirection(monster, "up")
-                  if (monster.upCollision) {
-                     selectDirections(monster, player);
-                  }
-               }
-               else if (availableDirections.includes("down")) {
-                  setDirection(monster, "down")
-                  if (monster.downCollision) {
-                     selectDirections(monster, player);
-                  }
-               }
-            }
-         }
+      if (direction == "up") {
+         this.direction.UP = true;
+         this.direction.DOWN = false;
+         this.direction.RIGHT = false;
+         this.direction.LEFT = false;
+         this.direction.STAY = false;
+      }
+      else if (direction == "down") {
+         this.direction.UP = false;
+         this.direction.DOWN = true;
+         this.direction.RIGHT = false;
+         this.direction.LEFT = false;
+         this.direction.STAY = false;
+      }
+      else if (direction == "right") {
+         this.direction.UP = false;
+         this.direction.DOWN = false;
+         this.direction.RIGHT = true;
+         this.direction.LEFT = false;
+         this.direction.STAY = false;
+      }
+      else if (direction == "left") {
+         this.direction.UP = false;
+         this.direction.DOWN = false;
+         this.direction.RIGHT = false;
+         this.direction.LEFT = true;
+         this.direction.STAY = false;
       }
    }
+
+   callAvailableDirections() {
+
+      this.availableDirections = [];
+   
+      // AVAILABLE DIRECTIONS
+      if (!this.upCollision) {
+         this.availableDirections.push("up");
+      }
+   
+      if (!this.downCollision) {
+         this.availableDirections.push("down");
+      }
+   
+      if (!this.leftCollision) {
+         this.availableDirections.push("left");
+      }
+   
+      if (!this.rightCollision) {
+         this.availableDirections.push("right");
+      }
+   }
+
+   trueSpot() {
+
+      if ((this.X % main.tileSize == main.midPoint) && (this.Y % main.tileSize == main.midPoint)) {
+         return true;
+      }
+      else
+         return false;
+   }
+
+   monsterChaseDirection(player) {
+
+      if (this.trueSpot()) {
+   
+         if (this.commonDirections.length > 0) {
+            this.selectDirections(player);
+            // Ortak gidilecek yön varsa => git!
+            if (this.commonDirections.includes("up")) {
+               this.setDirection("up")
+            }
+            else if (this.commonDirections.includes("down")) {
+               this.setDirection("down")
+            }
+            else if (this.commonDirections.includes("right")) {
+               this.setDirection("right")
+            }
+            else if (this.commonDirections.includes("left")) {
+               this.setDirection("left")
+            }
+         }
+   
+         // Ortak gidilecek yön yoksa => | Yolda duvar varsa |
+         if (this.commonDirections.length == 0) {
+   
+            // aşağı gitmem lazım ama duvara çarptıysam
+            if (this.targetDirections.includes("down")) {
+               if (this.availableDirections.includes("right")) {
+                  this.setDirection("right")
+                  if (this.rightCollision) {
+                     this.callAvailableDirections();
+                     if (this.availableDirections.includes("down")) {
+                        this.setDirection("down")
+                        this.selectDirections(player);
+                     }
+                  }
+               }
+               else if (this.availableDirections.includes("left")) {
+                  this.setDirection("left")
+                  if (this.leftCollision) {
+                     this.callAvailableDirections();
+                     if (this.availableDirections.includes("down")) {
+                        this.setDirection("down")
+                        this.selectDirections(player);
+                     }
+                  }
+               }
+            }
+   
+            // yukarı gitmem lazım ama duvara çarptıysam
+            else if (this.targetDirections.includes("up")) {
+   
+               if (this.availableDirections.includes("right")) {
+                  this.setDirection("right")
+                  this.callAvailableDirections();
+                  if (this.availableDirections.includes("up")) {
+                     this.setDirection("up")
+                     this.selectDirections(player);
+                  }
+               }
+               else if (this.availableDirections.includes("left")) {
+                  this.setDirection("left")
+                  this.callAvailableDirections();
+                  if (this.availableDirections.includes("up")) {
+                     this.setDirection("up")
+                     this.selectDirections(player);
+                  }
+               }
+            }
+   
+            // sağa gitmem lazım ama duvara çarptıysam
+            else if (this.targetDirections.includes("right")) {
+   
+               if (this.availableDirections.includes("up")) {
+                  this.setDirection("up")
+                  this.callAvailableDirections();
+                  if (this.availableDirections.includes("right")) {
+                     this.setDirection("right")
+                     this.selectDirections(player);
+                  }
+               }
+               else if (this.availableDirections.includes("down")) {
+                  this.setDirection("down")
+                  this.callAvailableDirections();
+                  if (this.availableDirections.includes("right")) {
+                     this.setDirection("right")
+                     this.selectDirections(player);
+                  }
+               }
+               else if (this.availableDirections.includes("left")) {
+                  this.setDirection("left")
+                  this.callAvailableDirections();
+                  if (this.availableDirections.includes("up")) {
+                     this.setDirection("up")
+                     if (this.upCollision) {
+                        this.selectDirections(player);
+                     }
+                  }
+                  else if (this.availableDirections.includes("down")) {
+                     this.setDirection("down")
+                     if (this.downCollision) {
+                        this.selectDirections(player);
+                     }
+                  }
+               }
+            }
+   
+            // sola gitmem lazım ama duvara çarptıysam
+            else if (this.targetDirections.includes("left")) {
+   
+               if (this.availableDirections.includes("up")) {
+                  this.setDirection("up")
+                  this.callAvailableDirections();
+                  if (this.availableDirections.includes("left")) {
+                     this.setDirection("left")
+                     this.selectDirections(player);
+                  }
+               }
+               else if (this.availableDirections.includes("down")) {
+                  this.setDirection("down")
+                  this.callAvailableDirections();
+                  if (this.availableDirections.includes("left")) {
+                     this.setDirection("left")
+                     this.selectDirections(player);
+                  }
+               }
+               else if (this.availableDirections.includes("right")) {
+                  this.setDirection("right")
+                  this.callAvailableDirections();
+                  if (this.availableDirections.includes("up")) {
+                     this.setDirection("up")
+                     if (this.upCollision) {
+                        this.selectDirections(player);
+                     }
+                  }
+                  else if (this.availableDirections.includes("down")) {
+                     this.setDirection("down")
+                     if (this.downCollision) {
+                        this.selectDirections(player);
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
 }
+
