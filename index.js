@@ -98,7 +98,110 @@ let constMap = [
    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
+let monsterIntervalID;
+let monsterImgChange = false;
+let changeMonsterImg = 1;
+
+function monsterImageChanger() {
+   monsterIntervalID = setTimeout(() => {
+      if (changeMonsterImg == 1) {
+         monsterImgChange = true;
+         changeMonsterImg = 2;
+      } else if (changeMonsterImg == 2) {
+         monsterImgChange = false;
+         changeMonsterImg = 1;
+      }
+      monsterImageChanger();
+   }, 150);
+}
+
 // All Images //
+
+// Blue Monster
+const Blue_Up = document.createElement("img");
+Blue_Up.src = './img/monster/Blue_Up.png'
+const Blue_Up2 = document.createElement("img");
+Blue_Up2.src = './img/monster/Blue_Up2.png'
+
+const Blue_Down = document.createElement("img");
+Blue_Down.src = './img/monster/Blue_Down.png'
+const Blue_Down2 = document.createElement("img");
+Blue_Down2.src = './img/monster/Blue_Down2.png'
+
+const Blue_Left = document.createElement("img");
+Blue_Left.src = './img/monster/Blue_Left.png'
+const Blue_Left2 = document.createElement("img");
+Blue_Left2.src = './img/monster/Blue_Left2.png'
+
+const Blue_Right = document.createElement("img");
+Blue_Right.src = './img/monster/Blue_Right.png'
+const Blue_Right2 = document.createElement("img");
+Blue_Right2.src = './img/monster/Blue_Right2.png'
+
+// Red Monster
+const Red_Up = document.createElement("img");
+Red_Up.src = './img/monster/Red_Up.png'
+const Red_Up2 = document.createElement("img");
+Red_Up2.src = './img/monster/Red_Up2.png'
+
+const Red_Down = document.createElement("img");
+Red_Down.src = './img/monster/Red_Down.png'
+const Red_Down2 = document.createElement("img");
+Red_Down2.src = './img/monster/Red_Down2.png'
+
+const Red_Left = document.createElement("img");
+Red_Left.src = './img/monster/Red_Left.png'
+const Red_Left2 = document.createElement("img");
+Red_Left2.src = './img/monster/Red_Left2.png'
+
+const Red_Right = document.createElement("img");
+Red_Right.src = './img/monster/Red_Right.png'
+const Red_Right2 = document.createElement("img");
+Red_Right2.src = './img/monster/Red_Right2.png'
+
+// Orange Monster
+const Orange_Up = document.createElement("img");
+Orange_Up.src = './img/monster/Orange_Up.png'
+const Orange_Up2 = document.createElement("img");
+Orange_Up2.src = './img/monster/Orange_Up2.png'
+
+const Orange_Down = document.createElement("img");
+Orange_Down.src = './img/monster/Orange_Down.png'
+const Orange_Down2 = document.createElement("img");
+Orange_Down2.src = './img/monster/Orange_Down2.png'
+
+const Orange_Left = document.createElement("img");
+Orange_Left.src = './img/monster/Orange_Left.png'
+const Orange_Left2 = document.createElement("img");
+Orange_Left2.src = './img/monster/Orange_Left2.png'
+
+const Orange_Right = document.createElement("img");
+Orange_Right.src = './img/monster/Orange_Right.png'
+const Orange_Right2 = document.createElement("img");
+Orange_Right2.src = './img/monster/Orange_Right2.png'
+
+// Pink Monster
+const Pink_Up = document.createElement("img");
+Pink_Up.src = './img/monster/Pink_Up.png'
+const Pink_Up2 = document.createElement("img");
+Pink_Up2.src = './img/monster/Pink_Up2.png'
+
+const Pink_Down = document.createElement("img");
+Pink_Down.src = './img/monster/Pink_Down.png'
+const Pink_Down2 = document.createElement("img");
+Pink_Down2.src = './img/monster/Pink_Down2.png'
+
+const Pink_Left = document.createElement("img");
+Pink_Left.src = './img/monster/Pink_Left.png'
+const Pink_Left2 = document.createElement("img");
+Pink_Left2.src = './img/monster/Pink_Left2.png'
+
+const Pink_Right = document.createElement("img");
+Pink_Right.src = './img/monster/Pink_Right.png'
+const Pink_Right2 = document.createElement("img");
+Pink_Right2.src = './img/monster/Pink_Right2.png'
+
+// OLD
 const blueMonster = document.createElement("img");
 blueMonster.src = './img/monster/Monster_Blue.png'
 const redMonster = document.createElement("img");
@@ -270,15 +373,154 @@ function drawMonster(monster) {
 
    switch (monster.color) {
       case "blue":
-         context.drawImage(blueMonster, monster.X - midPoint, monster.Y - midPoint)
-         break;
-      case "red":
-         context.drawImage(redMonster, monster.X - midPoint, monster.Y - midPoint)
+         if (monsterImgChange) {
+            if (monster.direction.UP) {
+               context.drawImage(Blue_Up, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.DOWN) {
+               context.drawImage(Blue_Down, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.RIGHT) {
+               context.drawImage(Blue_Right, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.LEFT) {
+               context.drawImage(Blue_Left, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.STAY) {
+               context.drawImage(Blue_Right, monster.X - midPoint, monster.Y - midPoint)
+            }
+         }
+         else {
+            if (monster.direction.UP) {
+               context.drawImage(Blue_Up2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.DOWN) {
+               context.drawImage(Blue_Down2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.RIGHT) {
+               context.drawImage(Blue_Right2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.LEFT) {
+               context.drawImage(Blue_Left2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.STAY) {
+               context.drawImage(Blue_Right2, monster.X - midPoint, monster.Y - midPoint)
+            }
+         }
          break;
       case "orange":
-         context.drawImage(orangeMonster, monster.X - midPoint, monster.Y - midPoint)
+         if (monsterImgChange) {
+            if (monster.direction.UP) {
+               context.drawImage(Orange_Up, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.DOWN) {
+               context.drawImage(Orange_Down, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.RIGHT) {
+               context.drawImage(Orange_Right, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.LEFT) {
+               context.drawImage(Orange_Left, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.STAY) {
+               context.drawImage(Orange_Right, monster.X - midPoint, monster.Y - midPoint)
+            }
+         }
+         else {
+            if (monster.direction.UP) {
+               context.drawImage(Orange_Up2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.DOWN) {
+               context.drawImage(Orange_Down2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.RIGHT) {
+               context.drawImage(Orange_Right2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.LEFT) {
+               context.drawImage(Orange_Left2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.STAY) {
+               context.drawImage(Orange_Right2, monster.X - midPoint, monster.Y - midPoint)
+            }
+         }
+         break;
+      case "pink":
+         if (monsterImgChange) {
+            if (monster.direction.UP) {
+               context.drawImage(Pink_Up, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.DOWN) {
+               context.drawImage(Pink_Down, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.RIGHT) {
+               context.drawImage(Pink_Right, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.LEFT) {
+               context.drawImage(Pink_Left, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.STAY) {
+               context.drawImage(Pink_Right, monster.X - midPoint, monster.Y - midPoint)
+            }
+         }
+         else {
+            if (monster.direction.UP) {
+               context.drawImage(Pink_Up2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.DOWN) {
+               context.drawImage(Pink_Down2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.RIGHT) {
+               context.drawImage(Pink_Right2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.LEFT) {
+               context.drawImage(Pink_Left2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.STAY) {
+               context.drawImage(Pink_Right2, monster.X - midPoint, monster.Y - midPoint)
+            }
+         }
+         break;
+      case "red":
+         if (monsterImgChange) {
+            if (monster.direction.UP) {
+               context.drawImage(Red_Up, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.DOWN) {
+               context.drawImage(Red_Down, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.RIGHT) {
+               context.drawImage(Red_Right, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.LEFT) {
+               context.drawImage(Red_Left, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.STAY) {
+               context.drawImage(Red_Right, monster.X - midPoint, monster.Y - midPoint)
+            }
+         }
+         else {
+            if (monster.direction.UP) {
+               context.drawImage(Red_Up2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.DOWN) {
+               context.drawImage(Red_Down2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.RIGHT) {
+               context.drawImage(Red_Right2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.LEFT) {
+               context.drawImage(Red_Left2, monster.X - midPoint, monster.Y - midPoint)
+            }
+            else if (monster.direction.STAY) {
+               context.drawImage(Red_Right2, monster.X - midPoint, monster.Y - midPoint)
+            }
+         }
          break;
    }
+
+
+
+
 }
 
 function displayGameOver() {
@@ -495,6 +737,7 @@ function changeDirection(event) {
             nextTick();
             clock();
             playerClass.imageChanger();
+            monsterImageChanger();
          }
          break;
    }
@@ -595,7 +838,7 @@ function nextTick() {
 
       moveEntity(monster2)
       drawMonster(monster2);
-      
+
       // Monster Orange
       if (monsterOrange.X == (1 * tileSize + midPoint) && monsterOrange.Y == (1 * tileSize + midPoint)) {
          j = 2;
