@@ -1,7 +1,6 @@
 import * as playerClass from "../player.js";
 import Player from "./player.js";
 import { Monster } from "./monster.js";
-import * as monsterClass from "../monster.js";
 
 // Game Constants
 const gameFrame = document.querySelector("#gameFrame")
@@ -22,8 +21,6 @@ window.addEventListener("keydown", function (e) {
 export const gameWidth = gameFrame.height; // 630px
 export const gameHeight = gameFrame.width; // 570px  //21x19
 export const tileSize = 30; // 30x30 px
-//const speed = 2.5;
-
 export let midPoint = tileSize / 2; //15 
 
 // Timer 
@@ -252,28 +249,43 @@ bait.src = './img/wall/bait.png'
 // Game Variables
 let lives = 3;
 let dies = 0;
-let score = 1000;
+let score = 953;
 let maxScore = 9648;
 
-// First Run
+function entityMidPoint(Coordinate){
+   return ((Coordinate * tileSize) + midPoint)
+}
 
+let monsterRedBase = {
+   X: entityMidPoint(14),
+   Y: entityMidPoint(5)
+}
+
+let monsterBlueBase = {
+   X: entityMidPoint(14),
+   Y: entityMidPoint(17)
+}
+
+let monsterOrangeBase = {
+   X: entityMidPoint(4),
+   Y: entityMidPoint(17)
+}
+
+let monsterPinkBase = {
+   X: entityMidPoint(4),
+   Y: entityMidPoint(5)
+}
+
+// First Run
 let player = new Player(2)
-let monsterRed = new Monster(tileSize * 9 + midPoint, tileSize * 3 + midPoint, "red", 1.5);
-let monsterBlue = new Monster(tileSize * 14 + midPoint, tileSize * 5 + midPoint, "blue", 1.5);
-let monsterOrange = new Monster(tileSize * 4 + midPoint, tileSize * 5 + midPoint, "orange", 1.5);
+let monsterRed = new Monster(monsterRedBase.X, monsterRedBase.Y, "red", 1.5);
+let monsterBlue = new Monster(monsterBlueBase.X, monsterBlueBase.Y, "blue", 1.5);
+let monsterOrange = new Monster(monsterOrangeBase.X, monsterOrangeBase.Y, "orange", 1.5);
+let monsterPink = new Monster(monsterPinkBase.X, monsterPinkBase.Y, "pink", 1.5);
 
 // Map Locations
-let playerLocationX;
-let playerLocationY;
-
-let monsterRedLocationX;
-let monsterRedLocationY;
-
-let monsterBlueLocationX;
-let monsterBlueLocationY;
-
-let monsterOrangeLocationX;
-let monsterOrangeLocationY;
+let playerLocationX, playerLocationY, monsterRedLocationX, monsterRedLocationY, monsterBlueLocationX,
+monsterBlueLocationY, monsterOrangeLocationX, monsterOrangeLocationY, monsterPinkLocationX, monsterPinkLocationY;
 
 // Initialize Game
 showMap();
@@ -291,6 +303,9 @@ function updateAllEntityLocations() {
 
    monsterOrangeLocationX = Math.round((monsterOrange.X - midPoint) / tileSize)
    monsterOrangeLocationY = Math.round((monsterOrange.Y - midPoint) / tileSize)
+
+   monsterPinkLocationX = Math.round((monsterPink.X - midPoint) / tileSize)
+   monsterPinkLocationY = Math.round((monsterPink.Y - midPoint) / tileSize)
 }
 
 function showMap() {
@@ -331,21 +346,25 @@ function setEntityStay(entity) {
 }
 
 function teleportMonstersToBase() {
-   monsterRed.X = tileSize * 12 + midPoint
-   monsterRed.Y = tileSize * 7 + midPoint
+   monsterRed.X = monsterRedBase.X;
+   monsterRed.Y = monsterRedBase.Y;
 
-   monsterBlue.X = tileSize * 14 + midPoint
-   monsterBlue.Y = tileSize * 5 + midPoint
+   monsterBlue.X = monsterBlueBase.X;
+   monsterBlue.Y = monsterBlueBase.Y;
 
-   monsterOrange.X = tileSize * 4 + midPoint
-   monsterOrange.Y = tileSize * 5 + midPoint
+   monsterOrange.X = monsterOrangeBase.X;
+   monsterOrange.Y = monsterOrangeBase.Y;
+
+   monsterPink.X = monsterPinkBase.X;
+   monsterPink.Y = monsterPinkBase.Y;
 }
 
 function monsterToPlayerCollision() {
    if (lives >= 0) {
       if (((playerLocationX == monsterRedLocationX) && (playerLocationY == monsterRedLocationY)) ||
          ((playerLocationX == monsterBlueLocationX) && (playerLocationY == monsterBlueLocationY)) ||
-         ((playerLocationX == monsterOrangeLocationX) && (playerLocationY == monsterOrangeLocationY))) {
+         ((playerLocationX == monsterOrangeLocationX) && (playerLocationY == monsterOrangeLocationY)) ||
+         ((playerLocationX == monsterPinkLocationX) && (playerLocationY == monsterPinkLocationY))) {
          setEntityStay(player);
          playerClass.teleportPlayerToBase(player);
          teleportMonstersToBase();
@@ -764,73 +783,86 @@ function clearMap() {
    context.fillRect(0, 0, gameHeight, gameWidth);
 }
 
-let chaseBlueDotTop = {
+let blueScatterTop = {
    X: 17 * tileSize + midPoint,
    Y: 1 * tileSize + midPoint
 }
 
-let chaseBlueDotBottom = {
+let blueScatterBot = {
    X: 14 * tileSize + midPoint,
    Y: 5 * tileSize + midPoint
 }
 
-let orangeScatterBot = {
-   X: 4 * tileSize + midPoint,
-   Y: 5 * tileSize + midPoint
+let orangeScatterTop = {
+   X: 5 * tileSize + midPoint,
+   Y: 15 * tileSize + midPoint
 }
 
-let orangeScatterTop = {
+let orangeScatterBot = {
+   X: 2 * tileSize + midPoint,
+   Y: 19 * tileSize + midPoint
+}
+
+let pinkScatterTop = {
    X: 1 * tileSize + midPoint,
    Y: 1 * tileSize + midPoint
+}
+
+let pinkScatterBot = {
+   X: 4 * tileSize + midPoint,
+   Y: 5 * tileSize + midPoint
 }
 
 monsterRed.selectDirections(player)
 monsterBlue.selectDirections(player)
 monsterOrange.selectDirections(player)
+monsterPink.selectDirections(player)
 
 let i = 2;
 let j = 1;
+let k = 2;
 
 // Main
 function nextTick() {
-
    intervalID = setTimeout(() => {
+      // Game Essentials
       clearMap();
       createMap();
       updateAllEntityLocations();
 
+      // Player Essentials
       moveEntity(player)
       playerClass.drawPlayer(player);
       collectScore();
 
-      // Monster1
+      // Red Monster
       monsterRed.monsterChaseDirection(player);
       moveEntity(monsterRed)
       drawMonster(monsterRed);
 
-      //monsterBlue
-      if (monsterBlue.X == (17 * tileSize + midPoint) && monsterBlue.Y == (1 * tileSize + midPoint)) {
+      // Blue Monster
+      if (monsterBlue.X == (blueScatterTop.X) && monsterBlue.Y == (blueScatterTop.Y)) {
          i = 2;
       }
-      else if (monsterBlue.X == (14 * tileSize + midPoint) && monsterBlue.Y == (5 * tileSize + midPoint)) {
+      else if (monsterBlue.X == (blueScatterBot.X) && monsterBlue.Y == (blueScatterBot.Y)) {
          i = 1;
       }
 
       if (i == 1) {
-         monsterBlue.monsterChaseDirection(chaseBlueDotTop);
+         monsterBlue.monsterChaseDirection(blueScatterTop);
       }
       else if (i == 2) {
-         monsterBlue.monsterChaseDirection(chaseBlueDotBottom);
+         monsterBlue.monsterChaseDirection(blueScatterBot);
       }
 
       moveEntity(monsterBlue)
       drawMonster(monsterBlue);
 
-      // Monster Orange
-      if (monsterOrange.X == (1 * tileSize + midPoint) && monsterOrange.Y == (1 * tileSize + midPoint)) {
+      // Orange Monster
+      if (monsterOrange.X == (orangeScatterTop.X) && monsterOrange.Y == (orangeScatterTop.Y)) {
          j = 2;
       }
-      else if (monsterOrange.X == (4 * tileSize + midPoint) && monsterOrange.Y == (5 * tileSize + midPoint)) {
+      else if (monsterOrange.X == (orangeScatterBot.X) && monsterOrange.Y == (orangeScatterBot.Y)) {
          j = 1;
       }
 
@@ -844,6 +876,25 @@ function nextTick() {
       moveEntity(monsterOrange)
       drawMonster(monsterOrange);
 
+      // Pink Monster
+      if (monsterPink.X == (pinkScatterBot.X) && monsterPink.Y == (pinkScatterBot.Y)) {
+         k = 1;
+      }
+      else if (monsterPink.X == (pinkScatterTop.X) && monsterPink.Y == (pinkScatterTop.Y)) {
+         k = 2;
+      }
+
+      if (k == 1) {
+         monsterPink.monsterChaseDirection(pinkScatterTop);
+      }
+      else if (k == 2) {
+         monsterPink.monsterChaseDirection(pinkScatterBot);
+      }
+
+      moveEntity(monsterPink)
+      drawMonster(monsterPink);
+
+      // Game Essentials
       monsterToPlayerCollision();
       nextTick();
    }, 10);

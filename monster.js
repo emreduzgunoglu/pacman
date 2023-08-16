@@ -7,9 +7,6 @@ export class Monster {
       this.color = color;
       this.speed = speed;
    }
-
-   X = main.tileSize * 9 + main.midPoint;
-   Y = main.tileSize * 15 + main.midPoint;
    collision = false;
 
    upCollision = false;
