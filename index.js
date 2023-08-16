@@ -258,21 +258,19 @@ let maxScore = 9648;
 // First Run
 
 let player = new Player(2)
-let monster = new Monster(tileSize * 9 + midPoint, tileSize * 3 + midPoint, "red", 1.5);
-let monster2 = new Monster(tileSize * 14 + midPoint, tileSize * 5 + midPoint, "blue", 1.5);
+let monsterRed = new Monster(tileSize * 9 + midPoint, tileSize * 3 + midPoint, "red", 1.5);
+let monsterBlue = new Monster(tileSize * 14 + midPoint, tileSize * 5 + midPoint, "blue", 1.5);
 let monsterOrange = new Monster(tileSize * 4 + midPoint, tileSize * 5 + midPoint, "orange", 1.5);
-monster.direction.UP = true;
-monster2.direction.UP = true;
 
 // Map Locations
 let playerLocationX;
 let playerLocationY;
 
-let monsterLocationX;
-let monsterLocationY;
+let monsterRedLocationX;
+let monsterRedLocationY;
 
-let monster2LocationX;
-let monster2LocationY;
+let monsterBlueLocationX;
+let monsterBlueLocationY;
 
 let monsterOrangeLocationX;
 let monsterOrangeLocationY;
@@ -285,11 +283,11 @@ function updateAllEntityLocations() {
    playerLocationX = Math.round((player.X - midPoint) / tileSize)
    playerLocationY = Math.round((player.Y - midPoint) / tileSize)
 
-   monsterLocationX = Math.round((monster.X - midPoint) / tileSize)
-   monsterLocationY = Math.round((monster.Y - midPoint) / tileSize)
+   monsterRedLocationX = Math.round((monsterRed.X - midPoint) / tileSize)
+   monsterRedLocationY = Math.round((monsterRed.Y - midPoint) / tileSize)
 
-   monster2LocationX = Math.round((monster2.X - midPoint) / tileSize)
-   monster2LocationY = Math.round((monster2.Y - midPoint) / tileSize)
+   monsterBlueLocationX = Math.round((monsterBlue.X - midPoint) / tileSize)
+   monsterBlueLocationY = Math.round((monsterBlue.Y - midPoint) / tileSize)
 
    monsterOrangeLocationX = Math.round((monsterOrange.X - midPoint) / tileSize)
    monsterOrangeLocationY = Math.round((monsterOrange.Y - midPoint) / tileSize)
@@ -300,8 +298,8 @@ function showMap() {
       setTimeout(() => {
          createMap();
          context.drawImage(playerClass.pacmanOpen, player.X - midPoint, player.Y - midPoint)
-         context.drawImage(redMonster, monster.X - midPoint, monster.Y - midPoint)
-         context.drawImage(blueMonster, monster2.X - midPoint, monster2.Y - midPoint)
+         context.drawImage(redMonster, monsterRed.X - midPoint, monsterRed.Y - midPoint)
+         context.drawImage(blueMonster, monsterBlue.X - midPoint, monsterBlue.Y - midPoint)
          context.drawImage(orangeMonster, monsterOrange.X - midPoint, monsterOrange.Y - midPoint)
          showMap();
       }, 10);
@@ -310,15 +308,12 @@ function showMap() {
 
 function liveCounter() {
    let liveImage = ""
-
    for (let i = 1; i <= lives; i++) {
       liveImage = liveImage + "❤️"
    }
-
    for (let j = dies; j > 0; j--) {
       liveImage = liveImage + "🤍"
    }
-
    if (lives < 0) {
       liveImage = "🤍🤍🤍"
    }
@@ -336,11 +331,11 @@ function setEntityStay(entity) {
 }
 
 function teleportMonstersToBase() {
-   monster.X = tileSize * 12 + midPoint
-   monster.Y = tileSize * 7 + midPoint
+   monsterRed.X = tileSize * 12 + midPoint
+   monsterRed.Y = tileSize * 7 + midPoint
 
-   monster2.X = tileSize * 14 + midPoint
-   monster2.Y = tileSize * 5 + midPoint
+   monsterBlue.X = tileSize * 14 + midPoint
+   monsterBlue.Y = tileSize * 5 + midPoint
 
    monsterOrange.X = tileSize * 4 + midPoint
    monsterOrange.Y = tileSize * 5 + midPoint
@@ -348,16 +343,12 @@ function teleportMonstersToBase() {
 
 function monsterToPlayerCollision() {
    if (lives >= 0) {
-      if (((playerLocationX == monsterLocationX) && (playerLocationY == monsterLocationY)) ||
-         ((playerLocationX == monster2LocationX) && (playerLocationY == monster2LocationY)) ||
+      if (((playerLocationX == monsterRedLocationX) && (playerLocationY == monsterRedLocationY)) ||
+         ((playerLocationX == monsterBlueLocationX) && (playerLocationY == monsterBlueLocationY)) ||
          ((playerLocationX == monsterOrangeLocationX) && (playerLocationY == monsterOrangeLocationY))) {
          setEntityStay(player);
          playerClass.teleportPlayerToBase(player);
          teleportMonstersToBase();
-
-         context.drawImage(redMonster, monster.X - midPoint, monster.Y - midPoint)
-         context.drawImage(blueMonster, monster2.X - midPoint, monster2.Y - midPoint)
-         context.drawImage(orangeMonster, monsterOrange.X - midPoint, monsterOrange.Y - midPoint)
 
          lives--;
          dies++;
@@ -793,8 +784,8 @@ let orangeScatterTop = {
    Y: 1 * tileSize + midPoint
 }
 
-monster.selectDirections(player)
-monster2.selectDirections(player)
+monsterRed.selectDirections(player)
+monsterBlue.selectDirections(player)
 monsterOrange.selectDirections(player)
 
 let i = 2;
@@ -813,27 +804,27 @@ function nextTick() {
       collectScore();
 
       // Monster1
-      monster.monsterChaseDirection(player);
-      moveEntity(monster)
-      drawMonster(monster);
+      monsterRed.monsterChaseDirection(player);
+      moveEntity(monsterRed)
+      drawMonster(monsterRed);
 
-      //Monster2
-      if (monster2.X == (17 * tileSize + midPoint) && monster2.Y == (1 * tileSize + midPoint)) {
+      //monsterBlue
+      if (monsterBlue.X == (17 * tileSize + midPoint) && monsterBlue.Y == (1 * tileSize + midPoint)) {
          i = 2;
       }
-      else if (monster2.X == (14 * tileSize + midPoint) && monster2.Y == (5 * tileSize + midPoint)) {
+      else if (monsterBlue.X == (14 * tileSize + midPoint) && monsterBlue.Y == (5 * tileSize + midPoint)) {
          i = 1;
       }
 
       if (i == 1) {
-         monster2.monsterChaseDirection(chaseBlueDotTop);
+         monsterBlue.monsterChaseDirection(chaseBlueDotTop);
       }
       else if (i == 2) {
-         monster2.monsterChaseDirection(chaseBlueDotBottom);
+         monsterBlue.monsterChaseDirection(chaseBlueDotBottom);
       }
 
-      moveEntity(monster2)
-      drawMonster(monster2);
+      moveEntity(monsterBlue)
+      drawMonster(monsterBlue);
 
       // Monster Orange
       if (monsterOrange.X == (1 * tileSize + midPoint) && monsterOrange.Y == (1 * tileSize + midPoint)) {
