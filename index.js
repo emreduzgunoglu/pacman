@@ -517,10 +517,6 @@ function drawMonster(monster) {
          }
          break;
    }
-
-
-
-
 }
 
 function displayGameOver() {
