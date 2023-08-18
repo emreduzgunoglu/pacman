@@ -113,7 +113,7 @@ function monsterImageChanger() {
 }
 
 // All Images //
-   // Blue Monster
+// Blue Monster
 const Blue_Up = document.createElement("img");
 Blue_Up.src = './img/monster/Blue_Up.png'
 const Blue_Up2 = document.createElement("img");
@@ -134,7 +134,7 @@ Blue_Right.src = './img/monster/Blue_Right.png'
 const Blue_Right2 = document.createElement("img");
 Blue_Right2.src = './img/monster/Blue_Right2.png'
 
-   // Red Monster
+// Red Monster
 const Red_Up = document.createElement("img");
 Red_Up.src = './img/monster/Red_Up.png'
 const Red_Up2 = document.createElement("img");
@@ -155,7 +155,7 @@ Red_Right.src = './img/monster/Red_Right.png'
 const Red_Right2 = document.createElement("img");
 Red_Right2.src = './img/monster/Red_Right2.png'
 
-   // Orange Monster
+// Orange Monster
 const Orange_Up = document.createElement("img");
 Orange_Up.src = './img/monster/Orange_Up.png'
 const Orange_Up2 = document.createElement("img");
@@ -176,7 +176,7 @@ Orange_Right.src = './img/monster/Orange_Right.png'
 const Orange_Right2 = document.createElement("img");
 Orange_Right2.src = './img/monster/Orange_Right2.png'
 
-   // Pink Monster
+// Pink Monster
 const Pink_Up = document.createElement("img");
 Pink_Up.src = './img/monster/Pink_Up.png'
 const Pink_Up2 = document.createElement("img");
@@ -243,7 +243,7 @@ let dies = 0;
 let score = 953;
 let maxScore = 9648;
 
-function entityMidPoint(Coordinate){
+function entityMidPoint(Coordinate) {
    return ((Coordinate * tileSize) + midPoint)
 }
 
@@ -306,7 +306,7 @@ let monsterPink = new Monster(monsterPinkBase.X, monsterPinkBase.Y, "pink", 1.5)
 
 // Map Locations
 let playerLocationX, playerLocationY, monsterRedLocationX, monsterRedLocationY, monsterBlueLocationX,
-monsterBlueLocationY, monsterOrangeLocationX, monsterOrangeLocationY, monsterPinkLocationX, monsterPinkLocationY;
+   monsterBlueLocationY, monsterOrangeLocationX, monsterOrangeLocationY, monsterPinkLocationX, monsterPinkLocationY;
 
 // Initialize Game
 displayGameStart();
@@ -541,7 +541,6 @@ function drawMonster(monster) {
 }
 
 function displayGameOver() {
-
    running = false;
    //clearTimeout(timerIntervalID);
    timerClock.innerHTML = " Game Over!"
@@ -941,31 +940,31 @@ function isCollied(entity) {
    if ((entity.X % tileSize == midPoint) &&
       (entity.Y % tileSize == midPoint)) {
 
-      let eX = Math.round((entity.X - midPoint) / tileSize)
-      let eY = Math.round((entity.Y - midPoint) / tileSize)
+      let x = (entity.X) / tileSize;
+      let y = (entity.Y) / tileSize;
 
-      if (map[eY - 15][eX] == 0) {
+      if (map[y - 1.5][x] == 0) {
          entity.upCollision = true;
       }
       else {
          entity.upCollision = false;
       }
 
-      if (map[eY + 15][eX] == 0) {
+      if (map[y + 0.5][x] == 0) {
          entity.downCollision = true;
       }
       else {
          entity.downCollision = false;
       }
 
-      if (map[eY][eX + 15] == 0) {
+      if (map[y][x + 0.5] == 0) {
          entity.rightCollision = true;
       }
       else {
          entity.rightCollision = false;
       }
 
-      if (map[eY][eX - 15] == 0) {
+      if (map[y][x - 1.5] == 0) {
          entity.leftCollision = true;
       }
       else {
