@@ -1,4 +1,4 @@
-import * as main from "../index.js";
+import * as main from "./index.js";
 
 export default class Player {
     constructor(speed) {
@@ -6,7 +6,7 @@ export default class Player {
     }
 
     X = main.tileSize * 9 + main.midPoint
-    Y = main.tileSize * 15 + main.midPoint
+    Y = main.tileSize * 9 + main.midPoint
     collision = false;
 
     upCollision = false;
@@ -102,7 +102,7 @@ export function teleportRight(player) {
 
 export function teleportLeft(player) {
     if (player.X + main.tileSize + main.midPoint < main.tileSize) {
-        player.X = 20 * main.tileSize
+        player.X = 20 * main.tileSize - main.midPoint
     }
 }
 
@@ -180,7 +180,7 @@ export function setDirection(entity, direction) {
 
 export function teleportPlayerToBase(player) {
     let baseCoordinateX = main.tileSize * 9 + main.midPoint;
-    let baseCoordinateY = main.tileSize * 15 + main.midPoint;
+    let baseCoordinateY = main.tileSize * 9 + main.midPoint;
 
     player.X = baseCoordinateX
     player.Y = baseCoordinateY

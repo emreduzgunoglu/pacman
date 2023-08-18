@@ -1,4 +1,4 @@
-import * as playerClass from "../player.js";
+import * as playerClass from "./player.js";
 import Player from "./player.js";
 import { Monster } from "./monster.js";
 
@@ -113,8 +113,7 @@ function monsterImageChanger() {
 }
 
 // All Images //
-
-// Blue Monster
+   // Blue Monster
 const Blue_Up = document.createElement("img");
 Blue_Up.src = './img/monster/Blue_Up.png'
 const Blue_Up2 = document.createElement("img");
@@ -135,7 +134,7 @@ Blue_Right.src = './img/monster/Blue_Right.png'
 const Blue_Right2 = document.createElement("img");
 Blue_Right2.src = './img/monster/Blue_Right2.png'
 
-// Red Monster
+   // Red Monster
 const Red_Up = document.createElement("img");
 Red_Up.src = './img/monster/Red_Up.png'
 const Red_Up2 = document.createElement("img");
@@ -156,7 +155,7 @@ Red_Right.src = './img/monster/Red_Right.png'
 const Red_Right2 = document.createElement("img");
 Red_Right2.src = './img/monster/Red_Right2.png'
 
-// Orange Monster
+   // Orange Monster
 const Orange_Up = document.createElement("img");
 Orange_Up.src = './img/monster/Orange_Up.png'
 const Orange_Up2 = document.createElement("img");
@@ -177,7 +176,7 @@ Orange_Right.src = './img/monster/Orange_Right.png'
 const Orange_Right2 = document.createElement("img");
 Orange_Right2.src = './img/monster/Orange_Right2.png'
 
-// Pink Monster
+   // Pink Monster
 const Pink_Up = document.createElement("img");
 Pink_Up.src = './img/monster/Pink_Up.png'
 const Pink_Up2 = document.createElement("img");
@@ -197,14 +196,6 @@ const Pink_Right = document.createElement("img");
 Pink_Right.src = './img/monster/Pink_Right.png'
 const Pink_Right2 = document.createElement("img");
 Pink_Right2.src = './img/monster/Pink_Right2.png'
-
-// OLD
-const blueMonster = document.createElement("img");
-blueMonster.src = './img/monster/Monster_Blue.png'
-const redMonster = document.createElement("img");
-redMonster.src = './img/monster/Monster_red2.png'
-const orangeMonster = document.createElement("img");
-orangeMonster.src = './img/monster/Monster_Orange.png'
 
 // 1-Way Wall
 const upWall = document.createElement("img");
@@ -258,12 +249,12 @@ function entityMidPoint(Coordinate){
 
 let monsterRedBase = {
    X: entityMidPoint(14),
-   Y: entityMidPoint(5)
+   Y: entityMidPoint(17)
 }
 
 let monsterBlueBase = {
    X: entityMidPoint(14),
-   Y: entityMidPoint(17)
+   Y: entityMidPoint(5)
 }
 
 let monsterOrangeBase = {
@@ -276,7 +267,37 @@ let monsterPinkBase = {
    Y: entityMidPoint(5)
 }
 
-// First Run
+// Blue Scatter Locations
+let blueScatterTop = {
+   X: 17 * tileSize + midPoint,
+   Y: 1 * tileSize + midPoint
+}
+let blueScatterBot = {
+   X: 14 * tileSize + midPoint,
+   Y: 5 * tileSize + midPoint
+}
+
+// Orange Scatter Locations
+let orangeScatterTop = {
+   X: 5 * tileSize + midPoint,
+   Y: 15 * tileSize + midPoint
+}
+let orangeScatterBot = {
+   X: 2 * tileSize + midPoint,
+   Y: 19 * tileSize + midPoint
+}
+
+// Pink Scatter Locations
+let pinkScatterTop = {
+   X: 1 * tileSize + midPoint,
+   Y: 1 * tileSize + midPoint
+}
+let pinkScatterBot = {
+   X: 4 * tileSize + midPoint,
+   Y: 5 * tileSize + midPoint
+}
+
+// Initialize Entity's
 let player = new Player(2)
 let monsterRed = new Monster(monsterRedBase.X, monsterRedBase.Y, "red", 1.5);
 let monsterBlue = new Monster(monsterBlueBase.X, monsterBlueBase.Y, "blue", 1.5);
@@ -288,8 +309,11 @@ let playerLocationX, playerLocationY, monsterRedLocationX, monsterRedLocationY, 
 monsterBlueLocationY, monsterOrangeLocationX, monsterOrangeLocationY, monsterPinkLocationX, monsterPinkLocationY;
 
 // Initialize Game
-showMap();
 displayGameStart();
+monsterRed.selectDirections(player)
+monsterBlue.selectDirections(player)
+monsterOrange.selectDirections(player)
+monsterPink.selectDirections(player)
 
 function updateAllEntityLocations() {
    playerLocationX = Math.round((player.X - midPoint) / tileSize)
@@ -306,19 +330,6 @@ function updateAllEntityLocations() {
 
    monsterPinkLocationX = Math.round((monsterPink.X - midPoint) / tileSize)
    monsterPinkLocationY = Math.round((monsterPink.Y - midPoint) / tileSize)
-}
-
-function showMap() {
-   if (!running) {
-      setTimeout(() => {
-         createMap();
-         context.drawImage(playerClass.pacmanOpen, player.X - midPoint, player.Y - midPoint)
-         context.drawImage(redMonster, monsterRed.X - midPoint, monsterRed.Y - midPoint)
-         context.drawImage(blueMonster, monsterBlue.X - midPoint, monsterBlue.Y - midPoint)
-         context.drawImage(orangeMonster, monsterOrange.X - midPoint, monsterOrange.Y - midPoint)
-         showMap();
-      }, 10);
-   }
 }
 
 function liveCounter() {
@@ -542,6 +553,18 @@ function displayGameOver() {
 
 function displayGameStart() {
    timerClock.innerHTML = "Press Enter to Start"
+
+   if (!running) {
+      setTimeout(() => {
+         createMap();
+         context.drawImage(playerClass.pacmanOpen, player.X - midPoint, player.Y - midPoint)
+         context.drawImage(Red_Left, monsterRed.X - midPoint, monsterRed.Y - midPoint)
+         context.drawImage(Blue_Left, monsterBlue.X - midPoint, monsterBlue.Y - midPoint)
+         context.drawImage(Orange_Right, monsterOrange.X - midPoint, monsterOrange.Y - midPoint)
+         context.drawImage(Pink_Right, monsterPink.X - midPoint, monsterPink.Y - midPoint)
+         displayGameStart();
+      }, 10);
+   }
 }
 
 function collectScore() {
@@ -783,41 +806,6 @@ function clearMap() {
    context.fillRect(0, 0, gameHeight, gameWidth);
 }
 
-let blueScatterTop = {
-   X: 17 * tileSize + midPoint,
-   Y: 1 * tileSize + midPoint
-}
-
-let blueScatterBot = {
-   X: 14 * tileSize + midPoint,
-   Y: 5 * tileSize + midPoint
-}
-
-let orangeScatterTop = {
-   X: 5 * tileSize + midPoint,
-   Y: 15 * tileSize + midPoint
-}
-
-let orangeScatterBot = {
-   X: 2 * tileSize + midPoint,
-   Y: 19 * tileSize + midPoint
-}
-
-let pinkScatterTop = {
-   X: 1 * tileSize + midPoint,
-   Y: 1 * tileSize + midPoint
-}
-
-let pinkScatterBot = {
-   X: 4 * tileSize + midPoint,
-   Y: 5 * tileSize + midPoint
-}
-
-monsterRed.selectDirections(player)
-monsterBlue.selectDirections(player)
-monsterOrange.selectDirections(player)
-monsterPink.selectDirections(player)
-
 let i = 2;
 let j = 1;
 let k = 2;
@@ -901,7 +889,6 @@ function nextTick() {
 }
 
 function clock() {
-
    if (currentTime > 0) {
       timerIntervalID = setTimeout(() => {
          currentTime = startTime - changedTime
@@ -948,3 +935,41 @@ function isCollied(entity) {
       entity.leftCollision = false;
    }
 }
+
+/* function isCollied(entity) {
+
+   if ((entity.X % tileSize == midPoint) &&
+      (entity.Y % tileSize == midPoint)) {
+
+      let eX = Math.round((entity.X - midPoint) / tileSize)
+      let eY = Math.round((entity.Y - midPoint) / tileSize)
+
+      if (map[eY - 15][eX] == 0) {
+         entity.upCollision = true;
+      }
+      else {
+         entity.upCollision = false;
+      }
+
+      if (map[eY + 15][eX] == 0) {
+         entity.downCollision = true;
+      }
+      else {
+         entity.downCollision = false;
+      }
+
+      if (map[eY][eX + 15] == 0) {
+         entity.rightCollision = true;
+      }
+      else {
+         entity.rightCollision = false;
+      }
+
+      if (map[eY][eX - 15] == 0) {
+         entity.leftCollision = true;
+      }
+      else {
+         entity.leftCollision = false;
+      }
+   }
+} */

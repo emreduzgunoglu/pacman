@@ -1,4 +1,4 @@
-import * as main from "../index.js";
+import * as main from "./index.js";
 
 export class Monster {
    constructor(X, Y, color, speed) {
@@ -275,4 +275,3 @@ export class Monster {
       }
    }
 }
-
