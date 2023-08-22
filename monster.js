@@ -22,6 +22,110 @@ export class Monster {
       STAY: true
    }
 
+   // Red Scatter Locations
+   redScatterTop = {
+      X: 17 * main.tileSize + main.midPoint,
+      Y: 1 * main.tileSize + main.midPoint
+   }
+   redScatterBot = {
+      X: 14 * main.tileSize + main.midPoint,
+      Y: 5 * main.tileSize + main.midPoint
+   }
+
+   // Pink Scatter Locations
+   pinkScatterTop = {
+      X: 1 * main.tileSize + main.midPoint,
+      Y: 1 * main.tileSize + main.midPoint
+   }
+   pinkScatterBot = {
+      X: 4 * main.tileSize + main.midPoint,
+      Y: 5 * main.tileSize + main.midPoint
+   }
+
+   // Orange Scatter Locations
+   orangeScatterTop = {
+      X: 5 * main.tileSize + main.midPoint,
+      Y: 15 * main.tileSize + main.midPoint
+   }
+   orangeScatterBot = {
+      X: 2 * main.tileSize + main.midPoint,
+      Y: 19 * main.tileSize + main.midPoint
+   }
+
+   // Blue Scatter Locations
+   blueScatterTop = {
+      X: 13 * main.tileSize + main.midPoint,
+      Y: 15 * main.tileSize + main.midPoint
+   }
+   blueScatterBot = {
+      X: 16 * main.tileSize + main.midPoint,
+      Y: 19 * main.tileSize + main.midPoint
+   }
+
+   scatterTop = true;
+   scatterBot = false;
+
+   scatter(){
+
+      // Blue Ghost
+      if(this.color == "blue"){
+         if(this.X == (this.blueScatterTop.X) && this.Y == (this.blueScatterTop.Y)){
+            this.scatterBot = true;
+            this.scatterTop = false;
+         }
+         else if(this.X == (this.blueScatterBot.X) && this.Y == (this.blueScatterBot.Y)){
+            this.scatterTop = true;
+            this.scatterBot = false;
+         }
+
+         if(this.scatterTop){
+            this.monsterChaseDirection(this.blueScatterTop)
+         }
+         else if(this.scatterBot){
+            this.monsterChaseDirection(this.blueScatterBot)
+         }
+      }
+
+      // Pink Ghost
+      if(this.color == "pink"){
+         if(this.X == (this.pinkScatterTop.X) && this.Y == (this.pinkScatterTop.Y)){
+            this.scatterBot = true;
+            this.scatterTop = false;
+         }
+         else if(this.X == (this.pinkScatterBot.X) && this.Y == (this.pinkScatterBot.Y)){
+            this.scatterTop = true;
+            this.scatterBot = false;
+         }
+
+         if(this.scatterTop){
+            this.monsterChaseDirection(this.pinkScatterTop)
+         }
+         else if(this.scatterBot){
+            this.monsterChaseDirection(this.pinkScatterBot)
+         }
+      }
+
+      // Orange Ghost
+      if(this.color == "orange"){
+         if(this.X == (this.orangeScatterTop.X) && this.Y == (this.orangeScatterTop.Y)){
+            this.scatterBot = true;
+            this.scatterTop = false;
+         }
+         else if(this.X == (this.orangeScatterBot.X) && this.Y == (this.orangeScatterBot.Y)){
+            this.scatterTop = true;
+            this.scatterBot = false;
+         }
+
+         if(this.scatterTop){
+            this.monsterChaseDirection(this.orangeScatterTop)
+         }
+         else if(this.scatterBot){
+            this.monsterChaseDirection(this.orangeScatterBot)
+         }
+      }
+      
+   }
+
    availableDirections = [];
    targetDirections = [];
    commonDirections = [];

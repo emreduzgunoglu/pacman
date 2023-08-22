@@ -253,8 +253,8 @@ let monsterRedBase = {
 }
 
 let monsterBlueBase = {
-   X: entityMidPoint(14),
-   Y: entityMidPoint(5)
+   X: entityMidPoint(13),
+   Y: entityMidPoint(15)
 }
 
 let monsterOrangeBase = {
@@ -805,10 +805,6 @@ function clearMap() {
    context.fillRect(0, 0, gameHeight, gameWidth);
 }
 
-let i = 2;
-let j = 1;
-let k = 2;
-
 // Main
 function nextTick() {
    intervalID = setTimeout(() => {
@@ -828,56 +824,17 @@ function nextTick() {
       drawMonster(monsterRed);
 
       // Blue Monster
-      if (monsterBlue.X == (blueScatterTop.X) && monsterBlue.Y == (blueScatterTop.Y)) {
-         i = 2;
-      }
-      else if (monsterBlue.X == (blueScatterBot.X) && monsterBlue.Y == (blueScatterBot.Y)) {
-         i = 1;
-      }
-
-      if (i == 1) {
-         monsterBlue.monsterChaseDirection(blueScatterTop);
-      }
-      else if (i == 2) {
-         monsterBlue.monsterChaseDirection(blueScatterBot);
-      }
-
+      monsterBlue.scatter();
       moveEntity(monsterBlue)
       drawMonster(monsterBlue);
 
       // Orange Monster
-      if (monsterOrange.X == (orangeScatterTop.X) && monsterOrange.Y == (orangeScatterTop.Y)) {
-         j = 2;
-      }
-      else if (monsterOrange.X == (orangeScatterBot.X) && monsterOrange.Y == (orangeScatterBot.Y)) {
-         j = 1;
-      }
-
-      if (j == 1) {
-         monsterOrange.monsterChaseDirection(orangeScatterTop);
-      }
-      else if (j == 2) {
-         monsterOrange.monsterChaseDirection(orangeScatterBot);
-      }
-
+      monsterOrange.scatter();
       moveEntity(monsterOrange)
       drawMonster(monsterOrange);
 
       // Pink Monster
-      if (monsterPink.X == (pinkScatterBot.X) && monsterPink.Y == (pinkScatterBot.Y)) {
-         k = 1;
-      }
-      else if (monsterPink.X == (pinkScatterTop.X) && monsterPink.Y == (pinkScatterTop.Y)) {
-         k = 2;
-      }
-
-      if (k == 1) {
-         monsterPink.monsterChaseDirection(pinkScatterTop);
-      }
-      else if (k == 2) {
-         monsterPink.monsterChaseDirection(pinkScatterBot);
-      }
-
+      monsterPink.scatter();
       moveEntity(monsterPink)
       drawMonster(monsterPink);
 
