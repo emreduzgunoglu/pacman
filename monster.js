@@ -44,86 +44,97 @@ export class Monster {
 
    // Orange Scatter Locations
    orangeScatterTop = {
-      X: 5 * main.tileSize + main.midPoint,
-      Y: 15 * main.tileSize + main.midPoint
+      X: 8 * main.tileSize + main.midPoint,
+      Y: 19 * main.tileSize + main.midPoint
    }
    orangeScatterBot = {
-      X: 2 * main.tileSize + main.midPoint,
-      Y: 19 * main.tileSize + main.midPoint
+      X: 1 * main.tileSize + main.midPoint,
+      Y: 17 * main.tileSize + main.midPoint
    }
 
    // Blue Scatter Locations
    blueScatterTop = {
-      X: 13 * main.tileSize + main.midPoint,
-      Y: 15 * main.tileSize + main.midPoint
+      X: 17 * main.tileSize + main.midPoint,
+      Y: 17 * main.tileSize + main.midPoint
    }
    blueScatterBot = {
-      X: 16 * main.tileSize + main.midPoint,
+      X: 10 * main.tileSize + main.midPoint,
       Y: 19 * main.tileSize + main.midPoint
    }
 
    scatterTop = true;
    scatterBot = false;
 
-   scatter(){
-
-      // Blue Ghost
-      if(this.color == "blue"){
-         if(this.X == (this.blueScatterTop.X) && this.Y == (this.blueScatterTop.Y)){
-            this.scatterBot = true;
-            this.scatterTop = false;
-         }
-         else if(this.X == (this.blueScatterBot.X) && this.Y == (this.blueScatterBot.Y)){
-            this.scatterTop = true;
-            this.scatterBot = false;
-         }
-
-         if(this.scatterTop){
-            this.monsterChaseDirection(this.blueScatterTop)
-         }
-         else if(this.scatterBot){
-            this.monsterChaseDirection(this.blueScatterBot)
-         }
+   scatterBlue(){
+      if(this.X == (this.blueScatterTop.X) && this.Y == (this.blueScatterTop.Y)){
+         this.scatterBot = true;
+         this.scatterTop = false;
+      }
+      else if(this.X == (this.blueScatterBot.X) && this.Y == (this.blueScatterBot.Y)){
+         this.scatterTop = true;
+         this.scatterBot = false;
       }
 
-      // Pink Ghost
-      if(this.color == "pink"){
-         if(this.X == (this.pinkScatterTop.X) && this.Y == (this.pinkScatterTop.Y)){
-            this.scatterBot = true;
-            this.scatterTop = false;
-         }
-         else if(this.X == (this.pinkScatterBot.X) && this.Y == (this.pinkScatterBot.Y)){
-            this.scatterTop = true;
-            this.scatterBot = false;
-         }
+      if(this.scatterTop){
+         this.monsterChaseDirection(this.blueScatterTop)
+      }
+      else if(this.scatterBot){
+         this.monsterChaseDirection(this.blueScatterBot)
+      }
+   }
 
-         if(this.scatterTop){
-            this.monsterChaseDirection(this.pinkScatterTop)
-         }
-         else if(this.scatterBot){
-            this.monsterChaseDirection(this.pinkScatterBot)
-         }
+   scatterPink(){
+      if(this.X == (this.pinkScatterTop.X) && this.Y == (this.pinkScatterTop.Y)){
+         this.scatterBot = true;
+         this.scatterTop = false;
+      }
+      else if(this.X == (this.pinkScatterBot.X) && this.Y == (this.pinkScatterBot.Y)){
+         this.scatterTop = true;
+         this.scatterBot = false;
       }
 
-      // Orange Ghost
-      if(this.color == "orange"){
-         if(this.X == (this.orangeScatterTop.X) && this.Y == (this.orangeScatterTop.Y)){
-            this.scatterBot = true;
-            this.scatterTop = false;
-         }
-         else if(this.X == (this.orangeScatterBot.X) && this.Y == (this.orangeScatterBot.Y)){
-            this.scatterTop = true;
-            this.scatterBot = false;
-         }
-
-         if(this.scatterTop){
-            this.monsterChaseDirection(this.orangeScatterTop)
-         }
-         else if(this.scatterBot){
-            this.monsterChaseDirection(this.orangeScatterBot)
-         }
+      if(this.scatterTop){
+         this.monsterChaseDirection(this.pinkScatterTop)
       }
-      
+      else if(this.scatterBot){
+         this.monsterChaseDirection(this.pinkScatterBot)
+      }
+   }
+
+   scatterOrange(){
+      if(this.X == (this.orangeScatterTop.X) && this.Y == (this.orangeScatterTop.Y)){
+         this.scatterBot = true;
+         this.scatterTop = false;
+      }
+      else if(this.X == (this.orangeScatterBot.X) && this.Y == (this.orangeScatterBot.Y)){
+         this.scatterTop = true;
+         this.scatterBot = false;
+      }
+
+      if(this.scatterTop){
+         this.monsterChaseDirection(this.orangeScatterTop)
+      }
+      else if(this.scatterBot){
+         this.monsterChaseDirection(this.orangeScatterBot)
+      }
+   }
+
+   scatterRed(){
+      if(this.X == (this.redScatterTop.X) && this.Y == (this.redScatterTop.Y)){
+         this.scatterBot = true;
+         this.scatterTop = false;
+      }
+      else if(this.X == (this.redScatterBot.X) && this.Y == (this.redScatterBot.Y)){
+         this.scatterTop = true;
+         this.scatterBot = false;
+      }
+
+      if(this.scatterTop){
+         this.monsterChaseDirection(this.redScatterTop)
+      }
+      else if(this.scatterBot){
+         this.monsterChaseDirection(this.redScatterBot)
+      }
    }
 
    availableDirections = [];

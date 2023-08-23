@@ -249,12 +249,12 @@ function entityMidPoint(Coordinate) {
 
 let monsterRedBase = {
    X: entityMidPoint(14),
-   Y: entityMidPoint(17)
+   Y: entityMidPoint(5)
 }
 
 let monsterBlueBase = {
-   X: entityMidPoint(13),
-   Y: entityMidPoint(15)
+   X: entityMidPoint(14),
+   Y: entityMidPoint(17)
 }
 
 let monsterOrangeBase = {
@@ -265,36 +265,6 @@ let monsterOrangeBase = {
 let monsterPinkBase = {
    X: entityMidPoint(4),
    Y: entityMidPoint(5)
-}
-
-// Blue Scatter Locations
-let blueScatterTop = {
-   X: 17 * tileSize + midPoint,
-   Y: 1 * tileSize + midPoint
-}
-let blueScatterBot = {
-   X: 14 * tileSize + midPoint,
-   Y: 5 * tileSize + midPoint
-}
-
-// Orange Scatter Locations
-let orangeScatterTop = {
-   X: 5 * tileSize + midPoint,
-   Y: 15 * tileSize + midPoint
-}
-let orangeScatterBot = {
-   X: 2 * tileSize + midPoint,
-   Y: 19 * tileSize + midPoint
-}
-
-// Pink Scatter Locations
-let pinkScatterTop = {
-   X: 1 * tileSize + midPoint,
-   Y: 1 * tileSize + midPoint
-}
-let pinkScatterBot = {
-   X: 4 * tileSize + midPoint,
-   Y: 5 * tileSize + midPoint
 }
 
 // Initialize Entity's
@@ -814,28 +784,29 @@ function nextTick() {
       updateAllEntityLocations();
 
       // Player Essentials
-      moveEntity(player)
+      moveEntity(player);
       playerClass.drawPlayer(player);
       collectScore();
 
       // Red Monster
-      monsterRed.monsterChaseDirection(player);
-      moveEntity(monsterRed)
+      // monsterRed.monsterChaseDirection(player);
+      monsterRed.scatterRed();
+      moveEntity(monsterRed);
       drawMonster(monsterRed);
 
       // Blue Monster
-      monsterBlue.scatter();
-      moveEntity(monsterBlue)
+      monsterBlue.scatterBlue();
+      moveEntity(monsterBlue);
       drawMonster(monsterBlue);
 
       // Orange Monster
-      monsterOrange.scatter();
-      moveEntity(monsterOrange)
+      monsterOrange.scatterOrange();
+      moveEntity(monsterOrange);
       drawMonster(monsterOrange);
 
       // Pink Monster
-      monsterPink.scatter();
-      moveEntity(monsterPink)
+      monsterPink.scatterPink();
+      moveEntity(monsterPink);
       drawMonster(monsterPink);
 
       // Game Essentials
