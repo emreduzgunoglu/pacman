@@ -1,13 +1,12 @@
 import * as main from "./index.js";
 
 export class Monster {
-   constructor(X, Y, color, speed) {
+   constructor(X, Y, color, speed, player) {
       this.X = X;
       this.Y = Y;
       this.color = color;
       this.speed = speed;
    }
-   collision = false;
 
    upCollision = false;
    downCollision = false;
@@ -390,3 +389,4 @@ export class Monster {
       }
    }
 }
+

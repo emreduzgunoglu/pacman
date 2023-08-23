@@ -589,6 +589,13 @@ function createMap() {
 
          if (map[i][j] == 0) { // if wall
 
+            // Open Middle
+            if(i == 8 && j == 9){
+               if(player.X > 210 && player.X < 360 && player.Y > 240 && player.Y < 330){
+                  map[8][9] = 2;
+               }
+            }
+
             let rightBool = false;
             let leftBool = false;
             let upBool = false;
@@ -669,16 +676,17 @@ function createMap() {
          else if (map[i][j] == 1) { // If Walk Way
             drawTile(bait, j, i)
          }
-         else if (map[i][j] == 2) { // if Pacman eats bait
-            //drawTile(black, j, i)
-            /* context.fillStyle = "red"
-            context.fillRect(player.X - midPoint, player.Y - midPoint, tileSize, tileSize); */
+         else if (map[i][j] == 2) { // Close Middle    
+            if(i == 8 && j == 9){
+               if(!(player.X > 210 && player.X < 360 && player.Y > 240 && player.Y < 330)){
+                  map[8][9] = 0;
+               }
+            }
          }
       }
    }
 }
 
-// Main
 function changeDirection(event) {
    const keyPressed = event.keyCode;
 
@@ -777,7 +785,6 @@ function clearMap() {
    context.fillRect(0, 0, gameHeight, gameWidth);
 }
 
-// Main
 function nextTick() {
    intervalID = setTimeout(() => {
       // Game Essentials
