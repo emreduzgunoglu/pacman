@@ -62,8 +62,8 @@ export class Monster {
       Y: 19 * main.tileSize + main.midPoint
    }
 
-   scatterTop = true;
-   scatterBot = false;
+   scatterTop = false;
+   scatterBot = true;
 
    scatterBlue(){
       if(this.X == (this.blueScatterTop.X) && this.Y == (this.blueScatterTop.Y)){

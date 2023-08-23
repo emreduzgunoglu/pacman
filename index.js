@@ -236,6 +236,8 @@ Xright.src = './img/wall/Xright.png'
 // Special PNG
 const bait = document.createElement("img");
 bait.src = './img/wall/bait.png'
+const black = document.createElement("img");
+black.src = './img/wall/black.png'
 
 // Game Variables
 let lives = 3;
@@ -789,7 +791,6 @@ function nextTick() {
       collectScore();
 
       // Red Monster
-      // monsterRed.monsterChaseDirection(player);
       monsterRed.scatterRed();
       moveEntity(monsterRed);
       drawMonster(monsterRed);
