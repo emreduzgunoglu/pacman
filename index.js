@@ -799,6 +799,7 @@ function nextTick() {
 
       // Red Monster
       monsterRed.scatterRed();
+      // CHASE -> monsterRed.monsterChaseDirection(player)
       moveEntity(monsterRed);
       drawMonster(monsterRed);
 
