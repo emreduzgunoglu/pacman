@@ -250,23 +250,23 @@ function entityMidPoint(Coordinate) {
 }
 
 let monsterRedBase = {
-   X: entityMidPoint(14),
-   Y: entityMidPoint(5)
+   X: entityMidPoint(9),
+   Y: entityMidPoint(7)
 }
 
 let monsterBlueBase = {
-   X: entityMidPoint(14),
-   Y: entityMidPoint(17)
+   X: entityMidPoint(8),
+   Y: entityMidPoint(9)
 }
 
 let monsterOrangeBase = {
-   X: entityMidPoint(4),
-   Y: entityMidPoint(17)
+   X: entityMidPoint(10),
+   Y: entityMidPoint(9)
 }
 
 let monsterPinkBase = {
-   X: entityMidPoint(4),
-   Y: entityMidPoint(5)
+   X: entityMidPoint(9),
+   Y: entityMidPoint(9)
 }
 
 // Initialize Entity's
@@ -283,9 +283,9 @@ let playerLocationX, playerLocationY, monsterRedLocationX, monsterRedLocationY, 
 // Initialize Game
 displayGameStart();
 monsterRed.selectDirections(player)
-monsterBlue.selectDirections(player)
+/* monsterBlue.selectDirections(player)
 monsterOrange.selectDirections(player)
-monsterPink.selectDirections(player)
+monsterPink.selectDirections(player) */
 
 function updateAllEntityLocations() {
    playerLocationX = Math.round((player.X - midPoint) / tileSize)
@@ -797,9 +797,8 @@ function nextTick() {
       playerClass.drawPlayer(player);
       collectScore();
 
-      // Red Monster
-      monsterRed.scatterRed();
-      // CHASE -> monsterRed.monsterChaseDirection(player)
+      // Red Monster -> monsterRed.chase(player)
+      monsterRed.scatterRed(); 
       moveEntity(monsterRed);
       drawMonster(monsterRed);
 

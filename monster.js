@@ -75,10 +75,10 @@ export class Monster {
       }
 
       if(this.scatterTop){
-         this.monsterChaseDirection(this.blueScatterTop)
+         this.chase(this.blueScatterTop)
       }
       else if(this.scatterBot){
-         this.monsterChaseDirection(this.blueScatterBot)
+         this.chase(this.blueScatterBot)
       }
    }
 
@@ -93,10 +93,10 @@ export class Monster {
       }
 
       if(this.scatterTop){
-         this.monsterChaseDirection(this.pinkScatterTop)
+         this.chase(this.pinkScatterTop)
       }
       else if(this.scatterBot){
-         this.monsterChaseDirection(this.pinkScatterBot)
+         this.chase(this.pinkScatterBot)
       }
    }
 
@@ -111,10 +111,10 @@ export class Monster {
       }
 
       if(this.scatterTop){
-         this.monsterChaseDirection(this.orangeScatterTop)
+         this.chase(this.orangeScatterTop)
       }
       else if(this.scatterBot){
-         this.monsterChaseDirection(this.orangeScatterBot)
+         this.chase(this.orangeScatterBot)
       }
    }
 
@@ -129,10 +129,10 @@ export class Monster {
       }
 
       if(this.scatterTop){
-         this.monsterChaseDirection(this.redScatterTop)
+         this.chase(this.redScatterTop)
       }
       else if(this.scatterBot){
-         this.monsterChaseDirection(this.redScatterBot)
+         this.chase(this.redScatterBot)
       }
    }
 
@@ -140,8 +140,7 @@ export class Monster {
    targetDirections = [];
    commonDirections = [];
 
-   selectDirections(player) {
-
+   selectDirections(target) {
       this.availableDirections = [];
       this.targetDirections = [];
 
@@ -149,31 +148,28 @@ export class Monster {
       if (!this.upCollision) {
          this.availableDirections.push("up");
       }
-
       if (!this.downCollision) {
          this.availableDirections.push("down");
       }
-
       if (!this.leftCollision) {
          this.availableDirections.push("left");
       }
-
       if (!this.rightCollision) {
          this.availableDirections.push("right");
       }
 
       // TO TARGET DIRECTIONS
-      if (player.X > this.X) {
+      if (target.X > this.X) {
          this.targetDirections.push("right")
       }
-      else if (player.X < this.X) {
+      else if (target.X < this.X) {
          this.targetDirections.push("left")
       }
 
-      if (player.Y > this.Y) {
+      if (target.Y > this.Y) {
          this.targetDirections.push("down")
       }
-      else if (player.Y < this.Y) {
+      else if (target.Y < this.Y) {
          this.targetDirections.push("up")
       }
 
@@ -181,7 +177,6 @@ export class Monster {
    }
 
    setDirection(direction) {
-
       if (direction == "up") {
          this.direction.UP = true;
          this.direction.DOWN = false;
@@ -213,29 +208,24 @@ export class Monster {
    }
 
    callAvailableDirections() {
-
       this.availableDirections = [];
 
       // AVAILABLE DIRECTIONS
       if (!this.upCollision) {
          this.availableDirections.push("up");
       }
-
       if (!this.downCollision) {
          this.availableDirections.push("down");
       }
-
       if (!this.leftCollision) {
          this.availableDirections.push("left");
       }
-
       if (!this.rightCollision) {
          this.availableDirections.push("right");
       }
    }
 
    trueSpot() {
-
       if ((this.X % main.tileSize == main.midPoint) && (this.Y % main.tileSize == main.midPoint)) {
          return true;
       }
@@ -243,12 +233,12 @@ export class Monster {
          return false;
    }
 
-   monsterChaseDirection(player) {
+   chase(target) {
 
       if (this.trueSpot()) {
 
          if (this.commonDirections.length > 0) {
-            this.selectDirections(player);
+            this.selectDirections(target);
             // Ortak gidilecek yön varsa => git!
             if (this.commonDirections.includes("up")) {
                this.setDirection("up")
@@ -275,7 +265,7 @@ export class Monster {
                      this.callAvailableDirections();
                      if (this.availableDirections.includes("down")) {
                         this.setDirection("down")
-                        this.selectDirections(player);
+                        this.selectDirections(target);
                      }
                   }
                }
@@ -285,7 +275,7 @@ export class Monster {
                      this.callAvailableDirections();
                      if (this.availableDirections.includes("down")) {
                         this.setDirection("down")
-                        this.selectDirections(player);
+                        this.selectDirections(target);
                      }
                   }
                }
@@ -293,13 +283,12 @@ export class Monster {
 
             // yukarı gitmem lazım ama duvara çarptıysam
             else if (this.targetDirections.includes("up")) {
-
                if (this.availableDirections.includes("right")) {
                   this.setDirection("right")
                   this.callAvailableDirections();
                   if (this.availableDirections.includes("up")) {
                      this.setDirection("up")
-                     this.selectDirections(player);
+                     this.selectDirections(target);
                   }
                }
                else if (this.availableDirections.includes("left")) {
@@ -307,20 +296,19 @@ export class Monster {
                   this.callAvailableDirections();
                   if (this.availableDirections.includes("up")) {
                      this.setDirection("up")
-                     this.selectDirections(player);
+                     this.selectDirections(target);
                   }
                }
             }
 
             // sağa gitmem lazım ama duvara çarptıysam
             else if (this.targetDirections.includes("right")) {
-
                if (this.availableDirections.includes("up")) {
                   this.setDirection("up")
                   this.callAvailableDirections();
                   if (this.availableDirections.includes("right")) {
                      this.setDirection("right")
-                     this.selectDirections(player);
+                     this.selectDirections(target);
                   }
                }
                else if (this.availableDirections.includes("down")) {
@@ -328,7 +316,7 @@ export class Monster {
                   this.callAvailableDirections();
                   if (this.availableDirections.includes("right")) {
                      this.setDirection("right")
-                     this.selectDirections(player);
+                     this.selectDirections(target);
                   }
                }
                else if (this.availableDirections.includes("left")) {
@@ -337,13 +325,13 @@ export class Monster {
                   if (this.availableDirections.includes("up")) {
                      this.setDirection("up")
                      if (this.upCollision) {
-                        this.selectDirections(player);
+                        this.selectDirections(target);
                      }
                   }
                   else if (this.availableDirections.includes("down")) {
                      this.setDirection("down")
                      if (this.downCollision) {
-                        this.selectDirections(player);
+                        this.selectDirections(target);
                      }
                   }
                }
@@ -351,13 +339,12 @@ export class Monster {
 
             // sola gitmem lazım ama duvara çarptıysam
             else if (this.targetDirections.includes("left")) {
-
                if (this.availableDirections.includes("up")) {
                   this.setDirection("up")
                   this.callAvailableDirections();
                   if (this.availableDirections.includes("left")) {
                      this.setDirection("left")
-                     this.selectDirections(player);
+                     this.selectDirections(target);
                   }
                }
                else if (this.availableDirections.includes("down")) {
@@ -365,7 +352,7 @@ export class Monster {
                   this.callAvailableDirections();
                   if (this.availableDirections.includes("left")) {
                      this.setDirection("left")
-                     this.selectDirections(player);
+                     this.selectDirections(target);
                   }
                }
                else if (this.availableDirections.includes("right")) {
@@ -374,13 +361,13 @@ export class Monster {
                   if (this.availableDirections.includes("up")) {
                      this.setDirection("up")
                      if (this.upCollision) {
-                        this.selectDirections(player);
+                        this.selectDirections(target);
                      }
                   }
                   else if (this.availableDirections.includes("down")) {
                      this.setDirection("down")
                      if (this.downCollision) {
-                        this.selectDirections(player);
+                        this.selectDirections(target);
                      }
                   }
                }

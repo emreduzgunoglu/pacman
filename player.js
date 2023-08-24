@@ -6,7 +6,7 @@ export default class Player {
     }
 
     X = main.tileSize * 9 + main.midPoint
-    Y = main.tileSize * 9 + main.midPoint
+    Y = main.tileSize * 15 + main.midPoint
     collision = false;
 
     upCollision = false;
@@ -180,7 +180,7 @@ export function setDirection(entity, direction) {
 
 export function teleportPlayerToBase(player) {
     let baseCoordinateX = main.tileSize * 9 + main.midPoint;
-    let baseCoordinateY = main.tileSize * 9 + main.midPoint;
+    let baseCoordinateY = main.tileSize * 15 + main.midPoint;
 
     player.X = baseCoordinateX
     player.Y = baseCoordinateY
