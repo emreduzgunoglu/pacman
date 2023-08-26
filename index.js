@@ -285,7 +285,7 @@ displayGameStart();
 monsterRed.selectDirections(player)
 /* monsterBlue.selectDirections(player)
 monsterOrange.selectDirections(player)
-monsterPink.selectDirections(player) */
+ */
 
 function updateAllEntityLocations() {
    playerLocationX = Math.round((player.X - midPoint) / tileSize)
@@ -589,12 +589,12 @@ function createMap() {
 
          if (map[i][j] == 0) { // if wall
 
-            // Open Middle
+            /* // Open Middle
             if(i == 8 && j == 9){
                if(player.X > 210 && player.X < 360 && player.Y > 240 && player.Y < 330){
                   map[8][9] = 2;
                }
-            }
+            } */
 
             let rightBool = false;
             let leftBool = false;
@@ -677,11 +677,11 @@ function createMap() {
             drawTile(bait, j, i)
          }
          else if (map[i][j] == 2) { // Close Middle    
-            if(i == 8 && j == 9){
+            /* if(i == 8 && j == 9){
                if(!(player.X > 210 && player.X < 360 && player.Y > 240 && player.Y < 330)){
                   map[8][9] = 0;
                }
-            }
+            } */
          }
       }
    }
@@ -785,6 +785,15 @@ function clearMap() {
    context.fillRect(0, 0, gameHeight, gameWidth);
 }
 
+let pinkScatterMode = false;
+
+let midMapLocation = {
+   X: 9 * tileSize + midPoint,
+   Y: 7 * tileSize + midPoint
+}
+
+let i = 0;
+
 function nextTick() {
    intervalID = setTimeout(() => {
       // Game Essentials
@@ -802,6 +811,23 @@ function nextTick() {
       moveEntity(monsterRed);
       drawMonster(monsterRed);
 
+      // Pink Monster
+      if(currentTime == 115){
+         i++;
+         pinkScatterMode = true;
+      }
+
+      if(i == 1){
+         monsterPink.selectDirections(player)
+         i++;
+      }
+
+      if(pinkScatterMode){
+         monsterPink.scatterPink();
+         moveEntity(monsterPink);
+      }
+      drawMonster(monsterPink);
+
       // Blue Monster
       monsterBlue.scatterBlue();
       moveEntity(monsterBlue);
@@ -811,11 +837,6 @@ function nextTick() {
       monsterOrange.scatterOrange();
       moveEntity(monsterOrange);
       drawMonster(monsterOrange);
-
-      // Pink Monster
-      monsterPink.scatterPink();
-      moveEntity(monsterPink);
-      drawMonster(monsterPink);
 
       // Game Essentials
       monsterToPlayerCollision();
