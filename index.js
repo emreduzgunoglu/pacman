@@ -786,13 +786,22 @@ function clearMap() {
 }
 
 let pinkScatterMode = false;
+let blueScatterMode = false;
+let orangeScatterMode = false; 
 
-let midMapLocation = {
-   X: 9 * tileSize + midPoint,
+let i = 0;
+let j = 0;
+let k = 0;
+
+let midLeftLocation = {
+   X: 6 * tileSize + midPoint,
    Y: 7 * tileSize + midPoint
 }
 
-let i = 0;
+let midRightLocation = {
+   X: 12 * tileSize + midPoint,
+   Y: 7 * tileSize + midPoint
+}
 
 function nextTick() {
    intervalID = setTimeout(() => {
@@ -816,26 +825,50 @@ function nextTick() {
          i++;
          pinkScatterMode = true;
       }
+      else if(currentTime == 110){
+         j++;
+         blueScatterMode = true;
+      }
+      else if(currentTime == 105){
+         k++;
+         orangeScatterMode = true;
+      }
 
       if(i == 1){
          monsterPink.selectDirections(player)
          i++;
       }
 
+      if(j == 1){
+         monsterBlue.selectDirections(player)
+         j++;
+      }
+
+      if(k == 1){
+         monsterOrange.selectDirections(player)
+         k++;
+      }
+
       if(pinkScatterMode){
          monsterPink.scatterPink();
          moveEntity(monsterPink);
       }
+
+      if(blueScatterMode){
+         monsterBlue.chase(midRightLocation)
+         //monsterBlue.scatterBlue();
+         moveEntity(monsterBlue);
+      }
+
+      if(orangeScatterMode){
+         monsterOrange.chase(midLeftLocation)
+         //monsterOrange.scatterOrange();
+         moveEntity(monsterOrange);
+      }
+
+      // Draw Monsters
       drawMonster(monsterPink);
-
-      // Blue Monster
-      monsterBlue.scatterBlue();
-      moveEntity(monsterBlue);
       drawMonster(monsterBlue);
-
-      // Orange Monster
-      monsterOrange.scatterOrange();
-      moveEntity(monsterOrange);
       drawMonster(monsterOrange);
 
       // Game Essentials
