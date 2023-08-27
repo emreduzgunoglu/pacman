@@ -283,9 +283,9 @@ let playerLocationX, playerLocationY, monsterRedLocationX, monsterRedLocationY, 
 // Initialize Game
 displayGameStart();
 monsterRed.selectDirections(player)
-/* monsterBlue.selectDirections(player)
+monsterPink.selectDirections(player)
+monsterBlue.selectDirections(player)
 monsterOrange.selectDirections(player)
- */
 
 function updateAllEntityLocations() {
    playerLocationX = Math.round((player.X - midPoint) / tileSize)
@@ -320,7 +320,6 @@ function liveCounter() {
 }
 
 function setEntityStay(entity) {
-
    entity.direction.UP = false
    entity.direction.DOWN = false
    entity.direction.LEFT = false
@@ -589,13 +588,6 @@ function createMap() {
 
          if (map[i][j] == 0) { // if wall
 
-            /* // Open Middle
-            if(i == 8 && j == 9){
-               if(player.X > 210 && player.X < 360 && player.Y > 240 && player.Y < 330){
-                  map[8][9] = 2;
-               }
-            } */
-
             let rightBool = false;
             let leftBool = false;
             let upBool = false;
@@ -676,12 +668,8 @@ function createMap() {
          else if (map[i][j] == 1) { // If Walk Way
             drawTile(bait, j, i)
          }
-         else if (map[i][j] == 2) { // Close Middle    
-            /* if(i == 8 && j == 9){
-               if(!(player.X > 210 && player.X < 360 && player.Y > 240 && player.Y < 330)){
-                  map[8][9] = 0;
-               }
-            } */
+         else if (map[i][j] == 2) {
+            // Can do something
          }
       }
    }
@@ -787,7 +775,7 @@ function clearMap() {
 
 let pinkScatterMode = false;
 let blueScatterMode = false;
-let orangeScatterMode = false; 
+let orangeScatterMode = false;
 
 let i = 0;
 let j = 0;
@@ -806,6 +794,65 @@ let midRightLocation = {
    Y: 7 * tileSize + midPoint
 }
 
+function monsterBehavior() {
+   
+   // Base Quit
+   if (currentTime == 115) {
+      map[8][9] = 1;
+      pinkScatterMode = true;
+   }
+   else if (currentTime == 110) {
+      map[8][9] = 1;
+      blueQuitBase = true;
+   }
+   else if (currentTime == 105) {
+      map[8][9] = 1;
+      orangeQuitBase = true;
+   }
+   else {
+      map[8][9] = 0;
+   }
+
+   if (pinkScatterMode) {
+      monsterPink.scatterPink();
+      moveEntity(monsterPink);
+   }
+
+   if (blueQuitBase) {
+      monsterBlue.chase(midRightLocation)
+      moveEntity(monsterBlue);
+   }
+   else if (blueScatterMode) {
+      monsterBlue.scatterBlue();
+      moveEntity(monsterBlue);
+   }
+
+   if (monsterBlue.X == midRightLocation.X && monsterBlue.Y == midRightLocation.Y) {
+      blueQuitBase = false;
+      blueScatterMode = true;
+   }
+
+   if (orangeQuitBase) {
+      monsterOrange.chase(midLeftLocation)
+      moveEntity(monsterOrange);
+   }
+   else if (orangeScatterMode) {
+
+      if (monsterOrange.count > 5 && monsterOrange.count < 15) {
+         monsterOrange.chase(player)
+      }
+      else {
+         monsterOrange.scatterOrange();
+      }
+      moveEntity(monsterOrange);
+   }
+
+   if (monsterOrange.X == midLeftLocation.X && monsterOrange.Y == midLeftLocation.Y) {
+      orangeQuitBase = false;
+      orangeScatterMode = true;
+   }
+}
+
 function nextTick() {
    intervalID = setTimeout(() => {
       // Game Essentials
@@ -818,78 +865,14 @@ function nextTick() {
       playerClass.drawPlayer(player);
       collectScore();
 
-      // Red Monster -> monsterRed.chase(player)
-      monsterRed.scatterRed(); 
+      // Red Monster
+      monsterRed.scatterRed();
       moveEntity(monsterRed);
       drawMonster(monsterRed);
 
-      // Pink Monster
-      if(currentTime == 115){
-         i++;
-         map[8][9] = 1;
-         pinkScatterMode = true;
-      }
-      else if(currentTime == 110){
-         j++;
-         map[8][9] = 1;
-         blueQuitBase = true;
-      }
-      else if(currentTime == 105){
-         k++;
-         map[8][9] = 1;
-         orangeQuitBase = true;
-      }
-      else {
-         map[8][9] = 0;
-      }
+      monsterBehavior();
 
-      if(i == 1){
-         monsterPink.selectDirections(player)
-         i++;
-      }
-
-      if(j == 1){
-         monsterBlue.selectDirections(player)
-         j++;
-      }
-
-      if(k == 1){
-         monsterOrange.selectDirections(player)
-         k++;
-      }
-
-      if(pinkScatterMode){
-         monsterPink.scatterPink();
-         moveEntity(monsterPink);
-      }
-
-      if(blueQuitBase){
-         monsterBlue.chase(midRightLocation)
-         moveEntity(monsterBlue);
-      }
-      else if(blueScatterMode){
-         monsterBlue.scatterBlue();
-         moveEntity(monsterBlue);
-      }
-
-      if(monsterBlue.X == midRightLocation.X && monsterBlue.Y == midRightLocation.Y){
-         blueQuitBase = false;
-         blueScatterMode = true;
-      }
-
-      if(orangeQuitBase){
-         monsterOrange.chase(midLeftLocation)
-         moveEntity(monsterOrange);
-      }
-      else if(orangeScatterMode){
-         monsterOrange.scatterOrange();
-         moveEntity(monsterOrange);
-      }
-
-      if(monsterOrange.X == midLeftLocation.X && monsterOrange.Y == midLeftLocation.Y){
-         orangeQuitBase = false;
-         orangeScatterMode = true;
-      }
+      //monsterRed.count
 
       // Draw Monsters
       drawMonster(monsterPink);

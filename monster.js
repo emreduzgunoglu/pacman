@@ -63,15 +63,18 @@ export class Monster {
 
    scatterTop = false;
    scatterBot = true;
+   count = 0;
 
    scatterBlue(){
       if(this.X == (this.blueScatterTop.X) && this.Y == (this.blueScatterTop.Y)){
          this.scatterBot = true;
          this.scatterTop = false;
+         this.count++;
       }
       else if(this.X == (this.blueScatterBot.X) && this.Y == (this.blueScatterBot.Y)){
          this.scatterTop = true;
          this.scatterBot = false;
+         this.count++;
       }
 
       if(this.scatterTop){
@@ -86,10 +89,12 @@ export class Monster {
       if(this.X == (this.pinkScatterTop.X) && this.Y == (this.pinkScatterTop.Y)){
          this.scatterBot = true;
          this.scatterTop = false;
+         this.count++;
       }
       else if(this.X == (this.pinkScatterBot.X) && this.Y == (this.pinkScatterBot.Y)){
          this.scatterTop = true;
          this.scatterBot = false;
+         this.count++;
       }
 
       if(this.scatterTop){
@@ -104,10 +109,12 @@ export class Monster {
       if(this.X == (this.orangeScatterTop.X) && this.Y == (this.orangeScatterTop.Y)){
          this.scatterBot = true;
          this.scatterTop = false;
+         this.count++;
       }
       else if(this.X == (this.orangeScatterBot.X) && this.Y == (this.orangeScatterBot.Y)){
          this.scatterTop = true;
          this.scatterBot = false;
+         this.count++;
       }
 
       if(this.scatterTop){
@@ -122,10 +129,12 @@ export class Monster {
       if(this.X == (this.redScatterTop.X) && this.Y == (this.redScatterTop.Y)){
          this.scatterBot = true;
          this.scatterTop = false;
+         this.count++;
       }
       else if(this.X == (this.redScatterBot.X) && this.Y == (this.redScatterBot.Y)){
          this.scatterTop = true;
          this.scatterBot = false;
+         this.count++;
       }
 
       if(this.scatterTop){
