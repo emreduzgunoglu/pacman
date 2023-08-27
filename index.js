@@ -793,6 +793,12 @@ let i = 0;
 let j = 0;
 let k = 0;
 
+let l = 0;
+let m = 0;
+
+let blueQuitBase = false;
+let orangeQuitBase = false;
+
 let midLeftLocation = {
    X: 6 * tileSize + midPoint,
    Y: 7 * tileSize + midPoint
@@ -827,11 +833,11 @@ function nextTick() {
       }
       else if(currentTime == 110){
          j++;
-         blueScatterMode = true;
+         blueQuitBase = true;
       }
       else if(currentTime == 105){
          k++;
-         orangeScatterMode = true;
+         orangeQuitBase = true;
       }
 
       if(i == 1){
@@ -854,16 +860,32 @@ function nextTick() {
          moveEntity(monsterPink);
       }
 
-      if(blueScatterMode){
+      if(blueQuitBase){
          monsterBlue.chase(midRightLocation)
-         //monsterBlue.scatterBlue();
+         moveEntity(monsterBlue);
+      }
+      else if(blueScatterMode){
+         monsterBlue.scatterBlue();
          moveEntity(monsterBlue);
       }
 
-      if(orangeScatterMode){
+      if(monsterBlue.X == midRightLocation.X && monsterBlue.Y == midRightLocation.Y){
+         blueQuitBase = false;
+         blueScatterMode = true;
+      }
+
+      if(orangeQuitBase){
          monsterOrange.chase(midLeftLocation)
-         //monsterOrange.scatterOrange();
          moveEntity(monsterOrange);
+      }
+      else if(orangeScatterMode){
+         monsterOrange.scatterOrange();
+         moveEntity(monsterOrange);
+      }
+
+      if(monsterOrange.X == midLeftLocation.X && monsterOrange.Y == midLeftLocation.Y){
+         orangeQuitBase = false;
+         orangeScatterMode = true;
       }
 
       // Draw Monsters
