@@ -244,6 +244,7 @@ export class Monster {
 
    chase(target) {
       if (this.trueSpot()) {
+
          if (this.commonDirections.length > 0) {
             this.selectDirections(target);
             // Ortak gidilecek yön varsa => git!

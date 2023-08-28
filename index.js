@@ -392,6 +392,7 @@ function monsterToPlayerCollision() {
          playerClass.teleportPlayerToBase(player);
          collisionAnimation(playerLocationX, playerLocationY);
 
+         quitTimer = 21;
          lives--;
          dies++;
          livesLabel.innerHTML = "Lives: " + liveCounter();
@@ -832,23 +833,38 @@ function closeBaseDoor() {
    }, 1000);
 }
 
+let quitTimer = 21;
+
+function quitTimerTimeout() {
+
+   if (quitTimer > 0) {
+      quitTimer = quitTimer - 1;
+   }
+}
+
 function quitBase() {
-   if (currentTime == 115) {
+   if (quitTimer == 15) {
       map[8][9] = 1
       pinkScatterMode = true;
       closeBaseDoor();
    }
-   else if (currentTime == 110) {
+   else if (quitTimer == 10) {
       map[8][9] = 1
       blueQuitBase = true;
       closeBaseDoor();
    }
-   else if (currentTime == 105) {
+   else if (quitTimer == 5) {
       map[8][9] = 1
       orangeQuitBase = true;
       closeBaseDoor();
    }
 }
+
+/* if(this.X > 210 && this.X < 360){
+   if(this.Y > 240 && this.Y < 330){
+      this.chase(main.midRightLocation)
+   }
+} */
 
 function monsterBehavior() {
 
@@ -949,6 +965,7 @@ function clock() {
          currentTime = startTime - changedTime
          timerClock.innerHTML = currentTime;
          changedTime++;
+         quitTimerTimeout();
          clock();
       }, 1000);
    }
