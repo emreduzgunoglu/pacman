@@ -399,7 +399,7 @@ function monsterToPlayerCollision() {
          pinkScatterMode = false;
          blueScatterMode = false;
          orangeScatterMode = false;
-
+         
          lives--;
          dies++;
          livesLabel.innerHTML = "Lives: " + liveCounter();
@@ -851,17 +851,17 @@ function quitTimerTimeout() {
 
 function quitBase() {
    if (quitTimer == 15) {
-      map[8][9] = 1
+      map[8][9] = 2
       pinkQuitBase = true;
       closeBaseDoor();
    }
    else if (quitTimer == 10) {
-      map[8][9] = 1
+      map[8][9] = 2
       blueQuitBase = true;
       closeBaseDoor();
    }
    else if (quitTimer == 5) {
-      map[8][9] = 1
+      map[8][9] = 2
       orangeQuitBase = true;
       closeBaseDoor();
    }
