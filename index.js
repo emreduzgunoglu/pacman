@@ -28,7 +28,6 @@ let timerClock = document.querySelector("#timer");
 let startTime = 120;
 let defaultTime = startTime;
 let currentTime = startTime;
-timerClock.innerHTML = currentTime
 let changedTime = 0;
 
 // Player 
@@ -37,13 +36,6 @@ let timerIntervalID;
 
 // Game State
 let running = false;
-
-let gameState = {
-   Start: 0,
-   Over: 0,
-   Win: 0,
-   Running: 0
-}
 
 // MAP
 let map = [
@@ -244,6 +236,7 @@ let lives = 3;
 let dies = 0;
 let score = 953;
 let maxScore = 9648;
+let highScore = 0;
 
 function entityMidPoint(Coordinate) {
    return ((Coordinate * tileSize) + midPoint)
@@ -287,6 +280,12 @@ let midRightLocation = {
    X: 12 * tileSize + midPoint,
    Y: 7 * tileSize + midPoint
 }
+
+//let animationInterval;
+let animationCount = 0;
+
+// Timer for quiting base
+let quitTimer = 21;
 
 // Initialize Entity's
 let player = new Player(2)
@@ -360,9 +359,6 @@ function teleportMonstersToBase() {
    monsterPink.Y = monsterPinkBase.Y;
 }
 
-//let animationInterval;
-let animationCount = 0;
-
 function collisionAnimation(X, Y) {
    setTimeout(() => {
       setEntityStay(player);
@@ -396,10 +392,8 @@ function monsterToPlayerCollision() {
          if (lives >= 1) {
             quitTimer = 21;
          }
-         pinkScatterMode = false;
-         blueScatterMode = false;
-         orangeScatterMode = false;
-         
+         resetMonsterValues();
+
          lives--;
          dies++;
          livesLabel.innerHTML = "Lives: " + liveCounter();
@@ -562,8 +556,9 @@ function drawMonster(monster) {
 
 function displayGameOver() {
    running = false;
-   //clearTimeout(timerIntervalID);
+   clearTimeout(timerIntervalID)
    timerClock.innerHTML = " Game Over!"
+   pacmanLabel.innerHTML = "High Score:" + highScore;
 
    setEntityStay(player);
    playerClass.teleportPlayerToBase(player);
@@ -571,7 +566,7 @@ function displayGameOver() {
 }
 
 function displayGameStart() {
-   timerClock.innerHTML = "Press Enter to Start"
+   //timerClock.innerHTML = "Press Enter to Start"
 
    if (!running) {
       setTimeout(() => {
@@ -595,31 +590,70 @@ function collectScore() {
 
       score = score + 47;
       scoreText.innerHTML = "Score: " + score;
+   }
 
-      if (score >= maxScore) {
-         displayGameOver();
-      }
+   if (score >= highScore) {
+      highScore = score;
+   }
+
+   if (score >= maxScore) {
+      highScore = 10000;
+      clearTimeout(timerIntervalID);
+      displayGameWon();
    }
 }
 
+function displayGameWon() {
+   running = false;
+   clearTimeout(timerIntervalID);
+
+   setEntityStay(player);
+   teleportMonstersToBase();
+   playerClass.teleportPlayerToBase(player);
+
+   pacmanLabel.innerHTML = "High Score:" + highScore;
+   timerClock.innerHTML = "You Won!";
+}
+
+function resetMonsterValues(){
+   pinkScatterMode = false;
+   blueScatterMode = false;
+   orangeScatterMode = false;
+   redScatterMode = true;
+
+   pinkQuitBase = false;
+   blueQuitBase = false;
+   orangeQuitBase = false;
+
+   monsterRed.count = 1;
+   monsterBlue.count = 1;
+   monsterOrange.count = 1;
+   monsterPink.count = 1;
+}
+
 function restartGame() {
-   running = true;
+   //running = true;
    lives = 3;
    dies = 0;
    livesLabel.innerHTML = "Lives: ❤️❤️❤️"
    score = 953;
+   quitTimer = 21;
    scoreText.innerHTML = "Score: " + score;
+   pacmanLabel.innerHTML = "Pac-Man";
+
+   resetMonsterValues();
 
    // Time Reset
    startTime = defaultTime;
-   currentTime = 60;
    changedTime = 0;
-   timerClock.innerHTML = startTime
+   timerClock.innerHTML = startTime;
 
    map = constMap.map(function (arr) {
       return arr.slice();
    });
 
+   clearTimeout(timerIntervalID);
+   setTimeout(clock(), 10);
    setEntityStay(player);
    teleportMonstersToBase();
    playerClass.teleportPlayerToBase(player);
@@ -840,10 +874,7 @@ function closeBaseDoor() {
    }, 1000);
 }
 
-let quitTimer = 21;
-
 function quitTimerTimeout() {
-
    if (quitTimer > 0) {
       quitTimer = quitTimer - 1;
    }
@@ -866,12 +897,6 @@ function quitBase() {
       closeBaseDoor();
    }
 }
-
-/* if(this.X > 210 && this.X < 360){
-   if(this.Y > 240 && this.Y < 330){
-      this.chase(main.midRightLocation)
-   }
-} */
 
 function monsterRedMovements() {
    if (redScatterMode) {
