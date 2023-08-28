@@ -274,6 +274,7 @@ let blueScatterMode = false;
 let orangeScatterMode = false;
 let redScatterMode = true;
 
+let pinkQuitBase = false;
 let blueQuitBase = false;
 let orangeQuitBase = false;
 
@@ -363,9 +364,9 @@ function teleportMonstersToBase() {
 let animationCount = 0;
 
 function collisionAnimation(X, Y) {
-
    setTimeout(() => {
       setEntityStay(player);
+      playerClass.teleportPlayerToBase(player);
       setEntityStay(monsterRed);
       setEntityStay(monsterBlue);
       setEntityStay(monsterOrange);
@@ -392,7 +393,13 @@ function monsterToPlayerCollision() {
          playerClass.teleportPlayerToBase(player);
          collisionAnimation(playerLocationX, playerLocationY);
 
-         quitTimer = 21;
+         if (lives >= 1) {
+            quitTimer = 21;
+         }
+         pinkScatterMode = false;
+         blueScatterMode = false;
+         orangeScatterMode = false;
+
          lives--;
          dies++;
          livesLabel.innerHTML = "Lives: " + liveCounter();
@@ -845,7 +852,7 @@ function quitTimerTimeout() {
 function quitBase() {
    if (quitTimer == 15) {
       map[8][9] = 1
-      pinkScatterMode = true;
+      pinkQuitBase = true;
       closeBaseDoor();
    }
    else if (quitTimer == 10) {
@@ -866,9 +873,7 @@ function quitBase() {
    }
 } */
 
-function monsterBehavior() {
-
-   // Red Monster
+function monsterRedMovements() {
    if (redScatterMode) {
       if (monsterRed.count > 3) {
          monsterRed.chase(player)
@@ -878,9 +883,15 @@ function monsterBehavior() {
       }
    }
    moveEntity(monsterRed);
+}
 
-   // Pink
-   if (pinkScatterMode) {
+function monsterPinkMovements() {
+
+   if (pinkQuitBase) {
+      monsterPink.chase(midLeftLocation);
+      moveEntity(monsterPink)
+   }
+   else if (pinkScatterMode) {
       if (monsterPink.count > 3) {
          monsterPink.chase(player)
       }
@@ -890,7 +901,13 @@ function monsterBehavior() {
       moveEntity(monsterPink);
    }
 
-   // Blue
+   if (monsterPink.X == midLeftLocation.X && monsterPink.Y == midLeftLocation.Y) {
+      pinkQuitBase = false;
+      pinkScatterMode = true;
+   }
+}
+
+function monsterBlueMovements() {
    if (blueQuitBase) {
       monsterBlue.chase(midRightLocation)
       moveEntity(monsterBlue);
@@ -909,8 +926,9 @@ function monsterBehavior() {
       blueQuitBase = false;
       blueScatterMode = true;
    }
+}
 
-   // Orange
+function monsterOrangeMovements() {
    if (orangeQuitBase) {
       monsterOrange.chase(midLeftLocation)
       moveEntity(monsterOrange);
@@ -945,7 +963,10 @@ function nextTick() {
 
       // Entity Essentials
       quitBase();
-      monsterBehavior();
+      monsterRedMovements();
+      monsterPinkMovements();
+      monsterBlueMovements();
+      monsterOrangeMovements();
 
       // Draw Monsters
       drawMonster(monsterRed);
