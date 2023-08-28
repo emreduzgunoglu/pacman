@@ -359,15 +359,38 @@ function teleportMonstersToBase() {
    monsterPink.Y = monsterPinkBase.Y;
 }
 
+//let animationInterval;
+let animationCount = 0;
+
+function collisionAnimation(X, Y) {
+
+   setTimeout(() => {
+      setEntityStay(player);
+      setEntityStay(monsterRed);
+      setEntityStay(monsterBlue);
+      setEntityStay(monsterOrange);
+      setEntityStay(monsterPink);
+      animationCount++;
+      if (animationCount < 100) {
+         //drawTile(playerClass.pacmanOpen, X, Y)
+         collisionAnimation(X, Y);
+      }
+      else {
+         teleportMonstersToBase();
+         animationCount = 0;
+      }
+   }, 10);
+}
+
 function monsterToPlayerCollision() {
    if (lives >= 0) {
       if (((playerLocationX == monsterRedLocationX) && (playerLocationY == monsterRedLocationY)) ||
          ((playerLocationX == monsterBlueLocationX) && (playerLocationY == monsterBlueLocationY)) ||
          ((playerLocationX == monsterOrangeLocationX) && (playerLocationY == monsterOrangeLocationY)) ||
          ((playerLocationX == monsterPinkLocationX) && (playerLocationY == monsterPinkLocationY))) {
-         setEntityStay(player);
+
          playerClass.teleportPlayerToBase(player);
-         teleportMonstersToBase();
+         collisionAnimation(playerLocationX, playerLocationY);
 
          lives--;
          dies++;
@@ -803,10 +826,10 @@ function monstersInBase() {
    }
 }
 
-function closeBaseDoor(){
+function closeBaseDoor() {
    setTimeout(() => {
       map[8][9] = 0
-   },1000);
+   }, 1000);
 }
 
 function quitBase() {
