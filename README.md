@@ -1,2 +1,2 @@
 # Pac-Man
-![JS-PacMan](https://github.com/emreduzgunoglu/pacman/assets/140405384/087721a4-39e0-4a2e-acac-2c4d84655b60)
+![pacman_github_photo](https://github.com/emreduzgunoglu/pacman/assets/140405384/5389a966-084f-4439-b69f-e4d639d210bc)
